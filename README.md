@@ -2,8 +2,8 @@
 
 ## Data Structures
 
-- MatchRes (instead of tuple)
-- ParseRes
+- `MatchRes` (instead of tuple)
+- `ParseRes`
 
 ### RuneMatch
 - Single(r rune) MatchRes DONE
