@@ -1,0 +1,10 @@
+go 1.23.3
+
+use (
+  .
+  ./datastructures
+  ./match
+  ./runematch
+  ./semanticmatch
+  ./stringmatch
+)
