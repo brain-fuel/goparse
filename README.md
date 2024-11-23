@@ -5,7 +5,7 @@
 - `MatchRes` (instead of tuple)
 - `ParseRes`
 
-### RuneMatch
+## Rune Match
 - `Single(r rune) MatchRes` DONE
 - `Not(r rune) MatchRes`
 
@@ -57,7 +57,7 @@
 - `Exact(r rune) MatchRes`
 - `NotExact(r rune) MatchRes `-- if not <r> <EOF>, then fails
 
-### StringMatch
+## String Match
 - `Match(str string) MatchRes`
 - `Not(str string) MatchRes`
 
@@ -67,7 +67,7 @@
 - `Exact(str string) MatchRes `-- if not <str> <EOF>, then fails
 - `NotExact(str string) MatchRes`
 
-### Match
+## Match
 - `Succeed() MatchRes`
 - `Fail() MatchRes`
 
@@ -151,7 +151,7 @@
 - `Whitespace() MatchRes `-- consumes all whitespace until non-whitespace rune
 - `NotWhitespace() MatchRes `-- consumes all non-whitespace until whitespace rune
 
-### SemanticMatch
+## Semantic Match
 
 ## Parser
 
