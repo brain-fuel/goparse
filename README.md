@@ -1,9 +1,6 @@
 # TODO
 
-## Types
-- Make Fields Private
-
-## Matcher
+## Data Structures
 
 ### RuneMatch
 - Single(r rune) MatchRes DONE
