@@ -6,7 +6,7 @@
 - `ParseRes`
 
 ### RuneMatch
-- `Single(r rune)` MatchRes DONE
+- `Single(r rune) MatchRes` DONE
 - `Not(r rune) MatchRes`
 
 - `Any() MatchRes`
