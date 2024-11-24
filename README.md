@@ -7,11 +7,6 @@
 
 ## TODO
 
-### Data Structures
-
-- `(ds.Match, ds.MatcherInput, error)` (instead of tuple)
-- `ParseRes`
-
 ### Rune Match
 - `Not(r rune) (ds.Match, ds.MatcherInput, error)`
 
