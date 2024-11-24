@@ -6,7 +6,7 @@
 - `ParseRes`
 
 ## Rune Match
-- `Single(r rune) (ds.Match, ds.MatcherInput, error)` DONE
+- DONE `Single(r rune) (ds.Match, ds.MatcherInput, error)`
 - `Not(r rune) (ds.Match, ds.MatcherInput, error)`
 
 - `Any() (ds.Match, ds.MatcherInput, error)`
