@@ -1,12 +1,18 @@
-# TODO
+# GoParse
 
-## Data Structures
+## Interface
+
+### Rune Match (goforge.dev/tools/goparse/runematch)
+- `Single(r rune) (ds.Match, ds.MatcherInput, error)`
+
+## TODO
+
+### Data Structures
 
 - `(ds.Match, ds.MatcherInput, error)` (instead of tuple)
 - `ParseRes`
 
-## Rune Match
-- DONE `Single(r rune) (ds.Match, ds.MatcherInput, error)`
+### Rune Match
 - `Not(r rune) (ds.Match, ds.MatcherInput, error)`
 
 - `Any() (ds.Match, ds.MatcherInput, error)`
@@ -57,7 +63,7 @@
 - `Exact(r rune) (ds.Match, ds.MatcherInput, error)`
 - `NotExact(r rune) (ds.Match, ds.MatcherInput, error) `-- if not <r> <EOF>, then fails
 
-## String Match
+### String Match
 - `Match(str string) (ds.Match, ds.MatcherInput, error)`
 - `Not(str string) (ds.Match, ds.MatcherInput, error)`
 
@@ -67,7 +73,7 @@
 - `Exact(str string) (ds.Match, ds.MatcherInput, error) `-- if not <str> <EOF>, then fails
 - `NotExact(str string) (ds.Match, ds.MatcherInput, error)`
 
-## Match
+### Match
 - `Succeed() (ds.Match, ds.MatcherInput, error)`
 - `Fail() (ds.Match, ds.MatcherInput, error)`
 
@@ -151,8 +157,8 @@
 - `Whitespace() (ds.Match, ds.MatcherInput, error) `-- consumes all whitespace until non-whitespace rune
 - `NotWhitespace() (ds.Match, ds.MatcherInput, error) `-- consumes all non-whitespace until whitespace rune
 
-## Semantic Match
+### Semantic Match
 
-## Parser
+### Parser
 
 
