@@ -209,18 +209,6 @@ func NotHyphen() ds.Matcher {
 	}
 }
 
-func WS() ds.Matcher {
-	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
-	}
-}
-
-func NotWS() ds.Matcher {
-	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
-	}
-}
-
 func AnyOf() ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
 		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
