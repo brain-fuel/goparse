@@ -3,154 +3,160 @@
 ## Interface
 
 ### Rune Match (goforge.dev/tools/goparse/runematch)
-- `Single(r rune) (ds.Match, ds.MatcherInput, error)`
+- `Single(r rune) datastructures.Matcher`
 
 ## TODO
 
 ### Rune Match
-- `Not(r rune) (ds.Match, ds.MatcherInput, error)`
+- `Not(r rune) datastructures.Matcher`
 
-- `Any() (ds.Match, ds.MatcherInput, error)`
-- `EOF() (ds.Match, ds.MatcherInput, error)`
+- `Any() datastructures.Matcher`
+- `EOF() datastructures.Matcher`
 
-- `InRange(low rune, hi rune) (ds.Match, ds.MatcherInput, error)`
-- `NotInRange(low rune, hi rune) (ds.Match, ds.MatcherInput, error)`
+- `InRange(low rune, hi rune) datastructures.Matcher`
+- `NotInRange(low rune, hi rune) datastructures.Matcher`
 
-- `Lower() (ds.Match, ds.MatcherInput, error)`
-- `NotLower() (ds.Match, ds.MatcherInput, error)`
+- `Lower() datastructures.Matcher`
+- `NotLower() datastructures.Matcher`
 
-- `Upper() (ds.Match, ds.MatcherInput, error)`
-- `NotUpper() (ds.Match, ds.MatcherInput, error)`
+- `Upper() datastructures.Matcher`
+- `NotUpper() datastructures.Matcher`
 
-- `Digit() (ds.Match, ds.MatcherInput, error)`
-- `NotDigit() (ds.Match, ds.MatcherInput, error)`
+- `Digit() datastructures.Matcher`
+- `NotDigit() datastructures.Matcher`
 
-- `Space() (ds.Match, ds.MatcherInput, error)`
-- `NotSpace() (ds.Match, ds.MatcherInput, error)`
+- `Space() datastructures.Matcher`
+- `NotSpace() datastructures.Matcher`
 
-- `Tab() (ds.Match, ds.MatcherInput, error)`
-- `NotTab() (ds.Match, ds.MatcherInput, error)`
+- `Tab() datastructures.Matcher`
+- `NotTab() datastructures.Matcher`
 
-- `Newline() (ds.Match, ds.MatcherInput, error)`
-- `NotNewline() (ds.Match, ds.MatcherInput, error)`
+- `CarriageReturn() datastructures.Matcher`
+- `NotCarriageReturn() datastructures.Matcher`
 
-- `CR() (ds.Match, ds.MatcherInput, error) `-- optional
-- `NotCR() (ds.Match, ds.MatcherInput, error) `-- optional
+- `Newline() datastructures.Matcher`
+- `NotNewline() datastructures.Matcher`
 
-- `WS() (ds.Match, ds.MatcherInput, error)`
-- `NotWS() (ds.Match, ds.MatcherInput, error)`
+- `CR() datastructures.Matcher `-- optional
+- `NotCR() datastructures.Matcher `-- optional
 
-- `Alphanumeric() (ds.Match, ds.MatcherInput, error)`
-- `NotAlphanumeric() (ds.Match, ds.MatcherInput, error)`
+- `WS() datastructures.Matcher`
+- `NotWS() datastructures.Matcher`
 
-- `AlphanumericPlusUnderscore() (ds.Match, ds.MatcherInput, error)`
-- `NotAlphanumericPlusUnderscore() (ds.Match, ds.MatcherInput, error)`
+- `Alphanumeric() datastructures.Matcher`
+- `NotAlphanumeric() datastructures.Matcher`
 
-- `Underscore() (ds.Match, ds.MatcherInput, error)`
-- `NotUnderscore() (ds.Match, ds.MatcherInput, error)`
+- `AlphanumericPlusUnderscore() datastructures.Matcher`
+- `NotAlphanumericPlusUnderscore() datastructures.Matcher`
 
-- `Hyphen() (ds.Match, ds.MatcherInput, error)`
-- `NotHyphen() (ds.Match, ds.MatcherInput, error)`
+- `Underscore() datastructures.Matcher`
+- `NotUnderscore() datastructures.Matcher`
 
-- `AnyOf(rs ...rune) (ds.Match, ds.MatcherInput, error)`
-- `NoneOf(rs ...rune) (ds.Match, ds.MatcherInput, error)`
+- `Hyphen() datastructures.Matcher`
+- `NotHyphen() datastructures.Matcher`
 
-- `Exact(r rune) (ds.Match, ds.MatcherInput, error)`
-- `NotExact(r rune) (ds.Match, ds.MatcherInput, error) `-- if not <r> <EOF>, then fails
+- `AnyOf(rs ...rune) datastructures.Matcher`
+- `NoneOf(rs ...rune) datastructures.Matcher`
+
+- `Exact(r rune) datastructures.Matcher`
+- `NotExact(r rune) datastructures.Matcher `-- if not <r> <EOF>, then fails
 
 ### String Match
-- `Match(str string) (ds.Match, ds.MatcherInput, error)`
-- `Not(str string) (ds.Match, ds.MatcherInput, error)`
+- `Match(str string) datastructures.Matcher`
+- `Not(str string) datastructures.Matcher`
 
-- `AnyOf(strs ...string) (ds.Match, ds.MatcherInput, error)`
-- `NoneOf(strs ...string) (ds.Match, ds.MatcherInput, error)`
+- `AnyOf(strs ...string) datastructures.Matcher`
+- `NoneOf(strs ...string) datastructures.Matcher`
 
-- `Exact(str string) (ds.Match, ds.MatcherInput, error) `-- if not <str> <EOF>, then fails
-- `NotExact(str string) (ds.Match, ds.MatcherInput, error)`
+- `EOF() datastructures.Matcher`
+- `NotEOF() datastructures.Matcher`
+
+- `Exact(str string) datastructures.Matcher `-- if not <str> <EOF>, then fails
+- `NotExact(str string) datastructures.Matcher`
 
 ### Match
-- `Succeed() (ds.Match, ds.MatcherInput, error)`
-- `Fail() (ds.Match, ds.MatcherInput, error)`
+- `Succeed() datastructures.Matcher`
+- `Fail() datastructures.Matcher`
 
-- `Match(mat Matcher) (ds.Match, ds.MatcherInput, error)`
-- `Not(mat Matcher) (ds.Match, ds.MatcherInput, error)`
+- `Match(mat Matcher) datastructures.Matcher`
+- `Not(mat Matcher) datastructures.Matcher`
 
-- `AnyOf(mats ...Matcher) (ds.Match, ds.MatcherInput, error)`
-- `NoneOf(mats ...Matcher) (ds.Match, ds.MatcherInput, error)`
+- `AnyOf(mats ...Matcher) datastructures.Matcher`
+- `NoneOf(mats ...Matcher) datastructures.Matcher`
 
-- `AllOf(mats ...Matcher) (ds.Match, ds.MatcherInput, error)`
-- `NotAllOf(mats ...Matcher) (ds.Match, ds.MatcherInput, error)`
+- `AllOf(mats ...Matcher) datastructures.Matcher`
+- `NotAllOf(mats ...Matcher) datastructures.Matcher`
 
-- `NOf(n int, mat Matcher) (ds.Match, ds.MatcherInput, error)`
-- `NotNOf(n int, mat Matcher) (ds.Match, ds.MatcherInput, error)`
+- `NOf(n int, mat Matcher) datastructures.Matcher`
+- `NotNOf(n int, mat Matcher) datastructures.Matcher`
 
-- `OneOf(mat Matcher) (ds.Match, ds.MatcherInput, error)`
-- `NotOneOf(mat Matcher) (ds.Match, ds.MatcherInput, error)`
+- `ExactlyOneOf(ms ...Matcher) datastructures.Matcher`
+- `NotExactlyOneOf(mat Matcher) datastructures.Matcher`
 
-- `NOrMoreMatchers(n int, mats ...Matcher) (ds.Match, ds.MatcherInput, error)`
-- `NotNOrMoreMatchers(n int, mats ...Matcher) (ds.Match, ds.MatcherInput, error)`
+- `NOrMoreMatchers(n int, mats ...Matcher) datastructures.Matcher`
+- `NotNOrMoreMatchers(n int, mats ...Matcher) datastructures.Matcher`
 
-- `NOrLessMatchers(n int, mats ...Matcher) (ds.Match, ds.MatcherInput, error)`
-- `NotNOrLessMatchers(n int, mats ...Matcher) (ds.Match, ds.MatcherInput, error)`
+- `NOrLessMatchers(n int, mats ...Matcher) datastructures.Matcher`
+- `NotNOrLessMatchers(n int, mats ...Matcher) datastructures.Matcher`
 
-- `NToMMatchers(n int, m int, mats ...Matcher) (ds.Match, ds.MatcherInput, error)`
-- `NotNToMMatchers(n int, m int, mats ...Matcher) (ds.Match, ds.MatcherInput, error)`
+- `NToMMatchers(n int, m int, mats ...Matcher) datastructures.Matcher`
+- `NotNToMMatchers(n int, m int, mats ...Matcher) datastructures.Matcher`
 
-- `InOrder(mats ...Matcher) (ds.Match, ds.MatcherInput, error)`
-- `NotInOrder(mats ...Matcher) (ds.Match, ds.MatcherInput, error)`
+- `InOrder(mats ...Matcher) datastructures.Matcher`
+- `NotInOrder(mats ...Matcher) datastructures.Matcher`
 
-- `NOrMore(n int, mat Matcher) (ds.Match, ds.MatcherInput, error)`
-- `NotNOrMore(n int, mat Matcher) (ds.Match, ds.MatcherInput, error)`
+- `NOrMore(n int, mat Matcher) datastructures.Matcher`
+- `NotNOrMore(n int, mat Matcher) datastructures.Matcher`
 
-- `ZeroOrMore(mat Matcher) (ds.Match, ds.MatcherInput, error)`
-- `NotZeroOrMore(mat Matcher) (ds.Match, ds.MatcherInput, error)`
+- `ZeroOrMore(mat Matcher) datastructures.Matcher`
+- `NotZeroOrMore(mat Matcher) datastructures.Matcher`
 
-- `OneOrMore(mat Matcher) (ds.Match, ds.MatcherInput, error)`
-- `NotOneOrMore(mat Matcher) (ds.Match, ds.MatcherInput, error)`
+- `OneOrMore(mat Matcher) datastructures.Matcher`
+- `NotOneOrMore(mat Matcher) datastructures.Matcher`
 
-- `NOrLess(n int, mat Matcher) (ds.Match, ds.MatcherInput, error)`
-- `NotNOrLess(n int, mat Matcher) (ds.Match, ds.MatcherInput, error)`
+- `NOrLess(n int, mat Matcher) datastructures.Matcher`
+- `NotNOrLess(n int, mat Matcher) datastructures.Matcher`
 
-- `Optional(mat Matcher) (ds.Match, ds.MatcherInput, error)` = `ZeroOrOne(mat Matcher) (ds.Match, ds.MatcherInput, error)` = `OneOrLess(mat Matcher) (ds.Match, ds.MatcherInput, error)`
-- `Mandatory(mat Matcher) (ds.Match, ds.MatcherInput, error)` = `Match(mat Matcher) (ds.Match, ds.MatcherInput, error)`
+- `Optional(mat Matcher) datastructures.Matcher` = `ZeroOrOne(mat Matcher) datastructures.Matcher` = `OneOrLess(mat Matcher) datastructures.Matcher`
+- `Mandatory(mat Matcher) datastructures.Matcher` = `Match(mat Matcher) datastructures.Matcher`
 
-- `BetweenRunes(r1 rune, r2 rune) (ds.Match, ds.MatcherInput, error)`
-- `NotBetweenRunes(r1 rune, r2 rune) (ds.Match, ds.MatcherInput, error)`
+- `BetweenRunes(r1 rune, r2 rune) datastructures.Matcher`
+- `NotBetweenRunes(r1 rune, r2 rune) datastructures.Matcher`
 
-- `BetweenStrings(s1 string, s2 string) (ds.Match, ds.MatcherInput, error)`
-- `NotBetweenStrings(s1 string, s2 string) (ds.Match, ds.MatcherInput, error)`
+- `BetweenStrings(s1 string, s2 string) datastructures.Matcher`
+- `NotBetweenStrings(s1 string, s2 string) datastructures.Matcher`
 
-- `Between(mat1 Matcher, mat2 Matcher) (ds.Match, ds.MatcherInput, error)`
-- `NotBetween(mat1 Matcher, mat2 Matcher) (ds.Match, ds.MatcherInput, error)`
+- `Between(mat1 Matcher, mat2 Matcher) datastructures.Matcher`
+- `NotBetween(mat1 Matcher, mat2 Matcher) datastructures.Matcher`
 
-- `Alphanumeric() (ds.Match, ds.MatcherInput, error)` -- captures while condition is true
-- `NotAlphanumeric() (ds.Match, ds.MatcherInput, error)`
+- `Alphanumeric() datastructures.Matcher` -- captures while condition is true
+- `NotAlphanumeric() datastructures.Matcher`
 
-- `AlphanumericPlusUnderscore() (ds.Match, ds.MatcherInput, error)` -- captures while condition is true
-- `NotAlphanumericPlusUnderscore() (ds.Match, ds.MatcherInput, error)`
+- `AlphanumericPlusUnderscore() datastructures.Matcher` -- captures while condition is true
+- `NotAlphanumericPlusUnderscore() datastructures.Matcher`
 
-- `Until(mat Matcher) (ds.Match, ds.MatcherInput, error)`
-- `SkipUntil(mat Matcher) (ds.Match, ds.MatcherInput, error)`
+- `Until(mat Matcher) datastructures.Matcher`
+- `SkipUntil(mat Matcher) datastructures.Matcher`
 
-- `Regex(re Regexp) (ds.Match, ds.MatcherInput, error)`
+- `Regex(re Regexp) datastructures.Matcher`
 
-- `EOF() (ds.Match, ds.MatcherInput, error)`
-- `UntilEOF() (ds.Match, ds.MatcherInput, error)`
+- `EOF() datastructures.Matcher`
+- `UntilEOF() datastructures.Matcher`
 
-- `WordBoundary() (ds.Match, ds.MatcherInput, error)`
-- `NotWordBoundary() (ds.Match, ds.MatcherInput, error)`
+- `WordBoundary() datastructures.Matcher`
+- `NotWordBoundary() datastructures.Matcher`
 
-- `Word() (ds.Match, ds.MatcherInput, error)` -- same as AlphanumericPlusUnderscore
-- `NotWord() (ds.Match, ds.MatcherInput, error)`
+- `Word() datastructures.Matcher` -- same as AlphanumericPlusUnderscore
+- `NotWord() datastructures.Matcher`
 
-- `Lookahead(mat Matcher) (ds.Match, ds.MatcherInput, error)` = `Before(mat Matcher) (ds.Match, ds.MatcherInput, error)`
-- `NotLookahead(mat Matcher) (ds.Match, ds.MatcherInput, error)` = `NotBefore(mat Matcher) (ds.Match, ds.MatcherInput, error)`
+- `Lookahead(mat Matcher) datastructures.Matcher` = `Before(mat Matcher) datastructures.Matcher`
+- `NotLookahead(mat Matcher) datastructures.Matcher` = `NotBefore(mat Matcher) datastructures.Matcher`
 
-- `Exact(mat Matcher) (ds.Match, ds.MatcherInput, error) `-- if not <mat> <EOF>, then fails
-- `NotExact(mat Matcher) (ds.Match, ds.MatcherInput, error)`
+- `Exact(mat Matcher) datastructures.Matcher `-- if not <mat> <EOF>, then fails
+- `NotExact(mat Matcher) datastructures.Matcher`
 
-- `Whitespace() (ds.Match, ds.MatcherInput, error) `-- consumes all whitespace until non-whitespace rune
-- `NotWhitespace() (ds.Match, ds.MatcherInput, error) `-- consumes all non-whitespace until whitespace rune
+- `Whitespace() datastructures.Matcher `-- consumes all whitespace until non-whitespace rune
+- `NotWhitespace() datastructures.Matcher `-- consumes all non-whitespace until whitespace rune
 
 ### Semantic Match
 

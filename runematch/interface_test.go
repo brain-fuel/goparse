@@ -45,7 +45,7 @@ func TestMatchOnEmptyStringShouldFail(t *testing.T) {
 	for _, r := range lettersAndNumbers {
 		expectedErr := errors.New("1:1: EOF").Error()
 		matcherInput := ds.NewMatcherInput("")
-		_, _, err := Single(r, matcherInput)
+		_, _, err := Single(r)(matcherInput)
 		if err == nil {
 			t.Errorf("expected %q, got no error", expectedErr)
 			continue
@@ -61,7 +61,7 @@ func TestFailingMatchShouldResultInSameMatcherInput(t *testing.T) {
 	for _, r := range lettersAndNumbers {
 		expectedErr := errors.New("1:1: EOF").Error()
 		matcherInput := ds.NewMatcherInput("")
-		_, input, err := Single(r, matcherInput)
+		_, input, err := Single(r)(matcherInput)
 		if err == nil {
 			t.Errorf("expected %q, got no error", expectedErr)
 			continue
@@ -80,7 +80,7 @@ func TestMatchOnSingleCharacterStringsShouldFail(t *testing.T) {
 	for _, s := range lettersAndNumbersStrings {
 		expectedErr := fmt.Sprintf("1:1: expected ':', got '%c'", s[0])
 		matcherInput := ds.NewMatcherInput(s)
-		_, _, err := Single(':', matcherInput)
+		_, _, err := Single(':')(matcherInput)
 		if err == nil {
 			t.Errorf("expected %q; got no error", expectedErr)
 			continue
@@ -97,7 +97,7 @@ func TestMatchOnSingleCharacterStringsShouldSucceed(t *testing.T) {
 	for idx, s := range lettersAndNumbersStrings {
 		matcherInput := ds.NewMatcherInput(s)
 		toMatch := lettersAndNumbersRunes[idx]
-		match, _, err := Single(toMatch, matcherInput)
+		match, _, err := Single(toMatch)(matcherInput)
 		if err != nil {
 			t.Errorf("expected no error; got %q", err)
 			continue
@@ -130,7 +130,7 @@ func TestMatchOnSingleCharacterShouldAdvancePosInfo(t *testing.T) {
 	matcherInput := ds.NewMatcherInput(inputStr)
 	charsToMatch := []rune{'a', 'b', '\n', 'c', '\n', '\n', 'a', 'd', 'a', 'b', 'a', '\n'}
 	for _, charToMatch := range charsToMatch {
-		_, inputRes, err := Single(charToMatch, matcherInput)
+		_, inputRes, err := Single(charToMatch)(matcherInput)
 		if err != nil {
 			t.Errorf("expected no error; got %q", err)
 		}

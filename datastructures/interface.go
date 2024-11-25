@@ -130,3 +130,5 @@ type Match struct {
 	PosInfo PosInfo
 	Matched string
 }
+
+type Matcher func(MatcherInput) (Match, MatcherInput, error)
