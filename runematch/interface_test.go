@@ -171,3 +171,51 @@ func TestMatchOnSingleCharacterShouldAdvancePosInfo(t *testing.T) {
 		matcherInput = inputRes
 	}
 }
+
+func TestNotOnMatchingCharacterShouldFail(t *testing.T) {
+	expectedErr := fmt.Sprintf("1:1: expected not 'a', got 'a'")
+	matcherInput := ds.NewMatcherInput("a")
+	_, _, err := Not('a')(matcherInput)
+	if err == nil {
+		t.Errorf("expected %q, got no error", expectedErr)
+	}
+	if err.Error() != expectedErr {
+		t.Errorf("expected %q, got %q", expectedErr, err)
+	}
+}
+
+func TestNotOnNotMatchingCharacterShouldSucceed(t *testing.T) {
+	lettersAndNumbersStrings := generateLettersAndNumbersStrings()
+	for idx, s := range lettersAndNumbersStrings {
+		if idx == 0 {
+			continue
+		}
+		matcherInput := ds.NewMatcherInput(s)
+		toMatch := 'a'
+		match, _, err := Not(toMatch)(matcherInput)
+		if err != nil {
+			t.Errorf("expected no error; got %q", err)
+			continue
+		}
+		expectedPosInfo := matcherInput.PosInfo
+		actualPosInfo := match.PosInfo
+		if actualPosInfo != expectedPosInfo {
+			t.Errorf(
+				"attempting to match not '%c', expected PosInfo %v, got PosInfo %v",
+				toMatch,
+				expectedPosInfo,
+				actualPosInfo,
+			)
+		}
+		expectedMatchedString := string(toMatch)
+		actualMatchedString := match.Matched
+		if actualMatchedString == expectedMatchedString {
+			t.Errorf(
+				"attempting to match not '%c', expected Matched %v, got Matched %v",
+				toMatch,
+				expectedMatchedString,
+				actualMatchedString,
+			)
+		}
+	}
+}

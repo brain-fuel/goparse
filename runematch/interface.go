@@ -37,7 +37,28 @@ func Single(expected rune) ds.Matcher {
 
 func Not(expected rune) ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
+		actualString, _, err := in.CurrentCharString()
+		if err != nil {
+			return ds.Match{}, in, ds.MatchError{
+				PosInfo: in.PosInfo,
+				Message: io.EOF.Error(),
+			}
+		}
+		if string(expected) == actualString {
+			return ds.Match{}, in, ds.MatchError{
+				PosInfo: in.PosInfo,
+				Message: fmt.Sprintf("expected not '%c', got '%s'", expected, actualString),
+			}
+		}
+		newMatch := ds.Match{
+			PosInfo: in.PosInfo,
+			Matched: actualString,
+		}
+		advancedInput, err := in.AdvanceBy(1)
+		if err != nil {
+			return newMatch, in, err
+		}
+		return newMatch, advancedInput, nil
 	}
 }
 
