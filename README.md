@@ -75,8 +75,8 @@
 - `NotExact(str string) datastructures.Matcher`
 
 ### Match
-- `Succeed() datastructures.Matcher`
-- `Fail() datastructures.Matcher`
+- `SucceedAndAdvanceBy(n int) datastructures.Matcher`
+- `FailAndAdvanceBy(n int) datastructures.Matcher`
 
 - `Match(mat Matcher) datastructures.Matcher`
 - `Not(mat Matcher) datastructures.Matcher`

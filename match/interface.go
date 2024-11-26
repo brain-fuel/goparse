@@ -7,13 +7,13 @@ import (
 	ds "goforge.dev/tools/goparse/datastructures"
 )
 
-func Succeed() ds.Matcher {
+func SucceedAndAdvanceBy(n int) ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
 		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
 	}
 }
 
-func Fail() ds.Matcher {
+func FailAndAdvanceBy(n int) ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
 		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
 	}
