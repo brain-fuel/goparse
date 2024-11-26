@@ -8,7 +8,7 @@
 
 ### Rune Match
 
-- [x] `Single(r rune) datastructures.Matcher` code/test
+- [x] `Single(r rune) datastructures.Matcher` [ ] code/test [ ] example
 - [ ] `Single(r rune) datastructures.Matcher` example
 - [x] `Not(r rune) datastructures.Matcher` code/test
 - [ ] `Not(r rune) datastructures.Matcher` example

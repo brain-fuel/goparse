@@ -219,3 +219,7 @@ func TestNotOnNotMatchingCharacterShouldSucceed(t *testing.T) {
 		}
 	}
 }
+
+func TestAnyOnAnyCharacterExceptEOFShouldSucceed(t *testing.T) {}
+
+func TestEOFOnAnyCharacterExceptEOFShouldFail(t *testing.T) {}
