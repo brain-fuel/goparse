@@ -192,7 +192,7 @@ func TestNotOnNotMatchingCharacterShouldSucceed(t *testing.T) {
 		}
 		matcherInput := ds.NewMatcherInput(s)
 		toMatch := 'a'
-		match, _, err := Not(toMatch)(matcherInput)
+		match, nextInput, err := Not(toMatch)(matcherInput)
 		if err != nil {
 			t.Errorf("expected no error; got %q", err)
 			continue
@@ -217,9 +217,48 @@ func TestNotOnNotMatchingCharacterShouldSucceed(t *testing.T) {
 				actualMatchedString,
 			)
 		}
+		increasedInput, _ := matcherInput.AdvanceBy(1)
+		if nextInput.PosInfo != increasedInput.PosInfo {
+			t.Errorf("attempted to advance matcher and failed")
+		}
 	}
 }
 
-func TestAnyOnAnyCharacterExceptEOFShouldSucceed(t *testing.T) {}
+func TestAnyOnAnyCharacterExceptEOFShouldSucceed(t *testing.T) {
+	eofErr := errors.New("1:1: EOF").Error()
+	blankMatcherInput := ds.NewMatcherInput("")
+	_, _, err := Any()(blankMatcherInput)
+	if err != nil {
+		if err.Error() != eofErr {
+			t.Errorf("expected %q, got %q", eofErr, err)
+		}
+	} else {
+		t.Errorf("expected %q, got no error", eofErr)
+	}
+	if err.Error() != eofErr {
+		t.Errorf("expected %q, got %q", eofErr, err)
+	}
+	lettersAndNumbersStrings := generateLettersAndNumbersStrings()
+	for _, s := range lettersAndNumbersStrings {
+		matcherInput := ds.NewMatcherInput(s)
+		match, nextInput, err := Any()(matcherInput)
+		if err != nil {
+			t.Errorf("expected no error; got %q", err)
+		}
+		expectedPosInfo := matcherInput.PosInfo
+		actualPosInfo := match.PosInfo
+		if actualPosInfo != expectedPosInfo {
+			t.Errorf(
+				"attempting to match any, expected PosInfo %v, got PosInfo %v",
+				expectedPosInfo,
+				actualPosInfo,
+			)
+		}
+		increasedInput, _ := matcherInput.AdvanceBy(1)
+		if nextInput.PosInfo != increasedInput.PosInfo {
+			t.Errorf("attempted to advance matcher and failed")
+		}
+	}
+}
 
 func TestEOFOnAnyCharacterExceptEOFShouldFail(t *testing.T) {}

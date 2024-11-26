@@ -64,7 +64,22 @@ func Not(expected rune) ds.Matcher {
 
 func Any() ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
+		actualString, _, err := in.CurrentCharString()
+		if err != nil {
+			return ds.Match{}, in, ds.MatchError{
+				PosInfo: in.PosInfo,
+				Message: io.EOF.Error(),
+			}
+		}
+		newMatch := ds.Match{
+			PosInfo: in.PosInfo,
+			Matched: actualString,
+		}
+		advancedInput, err := in.AdvanceBy(1)
+		if err != nil {
+			return newMatch, in, err
+		}
+		return newMatch, advancedInput, nil
 	}
 }
 

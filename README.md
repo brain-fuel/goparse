@@ -16,7 +16,7 @@
   - [ ] example
 
 - [ ] `Any() datastructures.Matcher`
-  - [ ] code/test
+  - [x] code/test
   - [ ] example
 - [ ] `EOF() datastructures.Matcher`
   - [ ] code/test
