@@ -9,9 +9,9 @@
 ### Rune Match
 
 - [x] `Single(r rune) datastructures.Matcher` code/test
-- [] `Single(r rune) datastructures.Matcher` example
+- [ ] `Single(r rune) datastructures.Matcher` example
 - [x] `Not(r rune) datastructures.Matcher` code/test
-- [] `Not(r rune) datastructures.Matcher` example
+- [ ] `Not(r rune) datastructures.Matcher` example
 
 - `Any() datastructures.Matcher`
 - `EOF() datastructures.Matcher`
