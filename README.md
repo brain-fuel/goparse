@@ -3,12 +3,16 @@
 ## Interface
 
 ### Rune Match (goforge.dev/tools/goparse/runematch)
-- `Single(r rune) datastructures.Matcher`
-- `Not(r rune) datastructures.Matcher`
 
 ## TODO
 
 ### Rune Match
+
+- [x] `Single(r rune) datastructures.Matcher` code/test
+- [] `Single(r rune) datastructures.Matcher` example
+- [x] `Not(r rune) datastructures.Matcher` code/test
+- [] `Not(r rune) datastructures.Matcher` example
+
 - `Any() datastructures.Matcher`
 - `EOF() datastructures.Matcher`
 
