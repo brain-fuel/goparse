@@ -4,12 +4,11 @@
 
 ### Rune Match (goforge.dev/tools/goparse/runematch)
 - `Single(r rune) datastructures.Matcher`
+- `Not(r rune) datastructures.Matcher`
 
 ## TODO
 
 ### Rune Match
-- `Not(r rune) datastructures.Matcher`
-
 - `Any() datastructures.Matcher`
 - `EOF() datastructures.Matcher`
 
