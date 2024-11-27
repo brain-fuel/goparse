@@ -101,6 +101,18 @@ func EOF() ds.Matcher {
 	}
 }
 
+func AnyOf(rs ...rune) ds.Matcher {
+	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
+		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
+	}
+}
+
+func NotAnyOf(rs ...rune) ds.Matcher {
+	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
+		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
+	}
+}
+
 func InRange(low rune, hi rune) ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
 		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
@@ -236,18 +248,6 @@ func Hyphen() ds.Matcher {
 }
 
 func NotHyphen() ds.Matcher {
-	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
-	}
-}
-
-func AnyOf() ds.Matcher {
-	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
-	}
-}
-
-func NotAnyOf() ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
 		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
 	}
