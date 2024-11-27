@@ -1,5 +1,13 @@
 # GoParse
 
+## Gotchas
+
+- The only matchers that match on EOF are:
+  - runematch.EOF()
+  - stringmatch.EOF()
+  - match.EOF()
+  - any semantic match using one of the aforementioned EOF matchers.
+
 ## Interface
 
 ### Data Structures (goforge.dev/tools/goparse/datastructures)

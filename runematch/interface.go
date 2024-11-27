@@ -114,9 +114,7 @@ func NotInRange(low rune, hi rune) ds.Matcher {
 }
 
 func Lower() ds.Matcher {
-	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
-	}
+	return InRange('a', 'z')
 }
 
 func NotLower() ds.Matcher {
@@ -126,9 +124,7 @@ func NotLower() ds.Matcher {
 }
 
 func Upper() ds.Matcher {
-	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
-	}
+	return InRange('A', 'Z')
 }
 
 func NotUpper() ds.Matcher {
@@ -138,9 +134,7 @@ func NotUpper() ds.Matcher {
 }
 
 func Digit() ds.Matcher {
-	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
-	}
+	return InRange('0', '9')
 }
 
 func NotDigit() ds.Matcher {
@@ -150,9 +144,7 @@ func NotDigit() ds.Matcher {
 }
 
 func Space() ds.Matcher {
-	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
-	}
+	return Single(' ')
 }
 
 func NotSpace() ds.Matcher {
@@ -162,9 +154,7 @@ func NotSpace() ds.Matcher {
 }
 
 func Tab() ds.Matcher {
-	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
-	}
+	return Single('\t')
 }
 
 func NotTab() ds.Matcher {
@@ -186,9 +176,7 @@ func NotCR() ds.Matcher {
 }
 
 func Newline() ds.Matcher {
-	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
-	}
+	return Single('\n')
 }
 
 func NotNewline() ds.Matcher {
@@ -222,9 +210,7 @@ func NotAlphanumeric() ds.Matcher {
 }
 
 func Underscore() ds.Matcher {
-	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
-	}
+	return Single('_')
 }
 
 func NotUnderscore() ds.Matcher {
@@ -246,9 +232,7 @@ func NotAlphanumericPlusUnderscore() ds.Matcher {
 }
 
 func Hyphen() ds.Matcher {
-	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
-	}
+	return Single('-')
 }
 
 func NotHyphen() ds.Matcher {
