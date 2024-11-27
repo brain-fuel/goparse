@@ -64,13 +64,6 @@
   - [ ] code/test
   - [ ] example
 
-- [ ] `CarriageReturn() datastructures.Matcher`
-  - [ ] code/test
-  - [ ] example
-- [ ] `NotCarriageReturn() datastructures.Matcher`
-  - [ ] code/test
-  - [ ] example
-
 - [ ] `Newline() datastructures.Matcher`
   - [ ] code/test
   - [ ] example
