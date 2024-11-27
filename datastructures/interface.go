@@ -127,8 +127,9 @@ func (e MatchError) Error() string {
 }
 
 type Match struct {
-	PosInfo PosInfo
-	Matched string
+	PosInfo    PosInfo
+	Matched    string
+	MatchedEOF bool
 }
 
 type Matcher func(MatcherInput) (Match, MatcherInput, error)

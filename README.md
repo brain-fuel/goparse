@@ -19,7 +19,7 @@
   - [x] code/test
   - [ ] example
 - [ ] `EOF() datastructures.Matcher`
-  - [ ] code/test
+  - [x] code/test
   - [ ] example
 
 - [ ] `InRange(low rune, hi rune) datastructures.Matcher`

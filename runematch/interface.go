@@ -85,7 +85,19 @@ func Any() ds.Matcher {
 
 func EOF() ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
+		s, _, err := in.CurrentCharString()
+		if err == nil {
+			return ds.Match{}, in, ds.MatchError{
+				PosInfo: in.PosInfo,
+				Message: fmt.Sprintf("expected EOF, got '%s'", s),
+			}
+		}
+		newMatch := ds.Match{
+			PosInfo:    in.PosInfo,
+			Matched:    "",
+			MatchedEOF: true,
+		}
+		return newMatch, in, nil
 	}
 }
 
