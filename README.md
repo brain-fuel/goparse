@@ -2,7 +2,17 @@
 
 ## Interface
 
+### Data Structures (goforge.dev/tools/goparse/datastructures)
+
 ### Rune Match (goforge.dev/tools/goparse/runematch)
+
+### String Match (goforge.dev/tools/goparse/stringmatch)
+
+### Match (goforge.dev/tools/goparse/match)
+
+### Semantic Match (goforge.dev/tools/goparse/semanticmatch)
+
+### Parse (goforge.dev/tools/goparse/parse)
 
 ## TODO
 
