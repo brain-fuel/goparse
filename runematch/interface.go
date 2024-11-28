@@ -111,7 +111,7 @@ func AnyOf(rs ...rune) ds.Matcher {
 	}
 }
 
-func NotAnyOf(rs ...rune) ds.Matcher {
+func NoneOf(rs ...rune) ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
 		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
 	}
@@ -190,7 +190,7 @@ func WS() ds.Matcher {
 }
 
 func NotWS() ds.Matcher {
-	return NotAnyOf(' ', '\t', '\r', '\n')
+	return NoneOf(' ', '\t', '\r', '\n')
 }
 
 func Alphanumeric() ds.Matcher {
