@@ -71,7 +71,10 @@ func Single(expected rune) ds.Matcher {
 		matchFn := func(ds.MatcherInput) bool {
 			return string(expected) == actualString
 		}
-		failureMessage := fmt.Sprintf("expected '%c', got '%s'", expected, actualString)
+		failureMessage := fmt.Sprintf(
+			"expected '%c', got '%s'",
+			expected,
+			actualString)
 		return currentRuneMatch(in, matchFn, failureMessage)
 	}
 }
