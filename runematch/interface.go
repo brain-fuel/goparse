@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"strings"
 
 	ds "goforge.dev/tools/goparse/datastructures"
 )
@@ -88,7 +89,25 @@ func Not(expected rune) ds.Matcher {
 
 func AnyOf(rs ...rune) ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
+		actualString, _, _ := in.CurrentCharString()
+		matchFn := func(ds.MatcherInput) bool {
+			for _, r := range rs {
+				if string(r) == actualString {
+					return true
+				}
+			}
+			return false
+		}
+		var runeStrings []string
+		for _, r := range rs {
+			runeStrings = append(runeStrings, fmt.Sprintf("'%c'", r))
+		}
+		failureMessage := fmt.Sprintf(
+			"expected any of [%s], got '%s'",
+			strings.Join(runeStrings, ", "),
+			actualString,
+		)
+		return currentRuneMatch(in, matchFn, failureMessage)
 	}
 }
 

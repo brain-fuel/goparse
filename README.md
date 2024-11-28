@@ -52,7 +52,7 @@
   - [ ] example
 
 - [ ] `InRange(low rune, hi rune) datastructures.Matcher`
-  - [ ] code/test
+  - [x] code/test
   - [ ] example
 - [ ] `NotInRange(low rune, hi rune) datastructures.Matcher`
   - [ ] code/test
