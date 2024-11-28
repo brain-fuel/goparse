@@ -130,9 +130,7 @@ func Lower() ds.Matcher {
 }
 
 func NotLower() ds.Matcher {
-	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
-	}
+	return NotInRange('a', 'z')
 }
 
 func Upper() ds.Matcher {
@@ -140,9 +138,7 @@ func Upper() ds.Matcher {
 }
 
 func NotUpper() ds.Matcher {
-	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
-	}
+	return NotInRange('A', 'Z')
 }
 
 func Digit() ds.Matcher {
@@ -150,9 +146,7 @@ func Digit() ds.Matcher {
 }
 
 func NotDigit() ds.Matcher {
-	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
-	}
+	return NotInRange('0', '9')
 }
 
 func Space() ds.Matcher {
@@ -160,9 +154,7 @@ func Space() ds.Matcher {
 }
 
 func NotSpace() ds.Matcher {
-	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
-	}
+	return Not(' ')
 }
 
 func Tab() ds.Matcher {
@@ -170,21 +162,15 @@ func Tab() ds.Matcher {
 }
 
 func NotTab() ds.Matcher {
-	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
-	}
+	return Not('\t')
 }
 
 func CR() ds.Matcher {
-	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
-	}
+	return Single('\r')
 }
 
 func NotCR() ds.Matcher {
-	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
-	}
+	return Not('\r')
 }
 
 func Newline() ds.Matcher {
@@ -192,21 +178,15 @@ func Newline() ds.Matcher {
 }
 
 func NotNewline() ds.Matcher {
-	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
-	}
+	return Not('\n')
 }
 
 func WS() ds.Matcher {
-	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
-	}
+	return AnyOf(' ', '\t', '\r', '\n')
 }
 
 func NotWS() ds.Matcher {
-	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
-	}
+	return NotAnyOf(' ', '\t', '\r', '\n')
 }
 
 func Alphanumeric() ds.Matcher {
@@ -226,9 +206,7 @@ func Underscore() ds.Matcher {
 }
 
 func NotUnderscore() ds.Matcher {
-	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
-	}
+	return Not('_')
 }
 
 func AlphanumericPlusUnderscore() ds.Matcher {
@@ -248,9 +226,7 @@ func Hyphen() ds.Matcher {
 }
 
 func NotHyphen() ds.Matcher {
-	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
-	}
+	return Not('-')
 }
 
 func Exact() ds.Matcher {
