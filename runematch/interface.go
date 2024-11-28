@@ -8,6 +8,45 @@ import (
 	ds "goforge.dev/tools/goparse/datastructures"
 )
 
+func EOF() ds.Matcher {
+	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
+		actualString, _, err := in.CurrentCharString()
+		if err == nil {
+			return ds.Match{}, in, ds.MatchError{
+				PosInfo: in.PosInfo,
+				Message: fmt.Sprintf("expected EOF, got '%s'", actualString),
+			}
+		}
+		newMatch := ds.Match{
+			PosInfo:    in.PosInfo,
+			Matched:    "",
+			MatchedEOF: true,
+		}
+		return newMatch, in, nil
+	}
+}
+
+func Any() ds.Matcher {
+	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
+		actualString, _, err := in.CurrentCharString()
+		if err != nil {
+			return ds.Match{}, in, ds.MatchError{
+				PosInfo: in.PosInfo,
+				Message: io.EOF.Error(),
+			}
+		}
+		newMatch := ds.Match{
+			PosInfo: in.PosInfo,
+			Matched: actualString,
+		}
+		advancedInput, err := in.AdvanceBy(1)
+		if err != nil {
+			return newMatch, in, err
+		}
+		return newMatch, advancedInput, nil
+	}
+}
+
 func Single(expected rune) ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
 		actualString, _, err := in.CurrentCharString()
@@ -59,45 +98,6 @@ func Not(expected rune) ds.Matcher {
 			return newMatch, in, err
 		}
 		return newMatch, advancedInput, nil
-	}
-}
-
-func Any() ds.Matcher {
-	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		actualString, _, err := in.CurrentCharString()
-		if err != nil {
-			return ds.Match{}, in, ds.MatchError{
-				PosInfo: in.PosInfo,
-				Message: io.EOF.Error(),
-			}
-		}
-		newMatch := ds.Match{
-			PosInfo: in.PosInfo,
-			Matched: actualString,
-		}
-		advancedInput, err := in.AdvanceBy(1)
-		if err != nil {
-			return newMatch, in, err
-		}
-		return newMatch, advancedInput, nil
-	}
-}
-
-func EOF() ds.Matcher {
-	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		actualString, _, err := in.CurrentCharString()
-		if err == nil {
-			return ds.Match{}, in, ds.MatchError{
-				PosInfo: in.PosInfo,
-				Message: fmt.Sprintf("expected EOF, got '%s'", actualString),
-			}
-		}
-		newMatch := ds.Match{
-			PosInfo:    in.PosInfo,
-			Matched:    "",
-			MatchedEOF: true,
-		}
-		return newMatch, in, nil
 	}
 }
 

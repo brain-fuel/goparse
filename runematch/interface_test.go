@@ -40,6 +40,78 @@ func generateLettersAndNumbersStrings() []string {
 
 // Tests
 
+func TestEOFOnAnyCharacterExceptEOFShouldFail(t *testing.T) {
+	blankMatcherInput := ds.NewMatcherInput("")
+	m, newIn, err := EOF()(blankMatcherInput)
+	if err != nil {
+		t.Errorf("expected no error, got %q", err)
+	}
+	if m.Matched != "" {
+		t.Errorf("expected blank string match, got %s", m.Matched)
+	}
+	if !m.MatchedEOF {
+		t.Error("expected MatchedEOF, got !MatchedEOF")
+	}
+	if newIn != blankMatcherInput {
+		t.Error("expected new input to match blank input")
+	}
+	lettersAndNumbersStrings := generateLettersAndNumbersStrings()
+	for _, s := range lettersAndNumbersStrings {
+		notEOFErr := fmt.Sprintf("1:1: expected EOF, got '%s'", s)
+		matcherInput := ds.NewMatcherInput(s)
+		_, _, err := EOF()(matcherInput)
+		if err == nil {
+			t.Errorf("expected %q, got no error", notEOFErr)
+			continue
+		}
+		if err.Error() != notEOFErr {
+			t.Errorf("expected %q, got %q", notEOFErr, err)
+			continue
+		}
+	}
+}
+
+func TestAnyOnAnyCharacterExceptEOFShouldSucceed(t *testing.T) {
+	eofErr := errors.New("1:1: EOF").Error()
+	blankMatcherInput := ds.NewMatcherInput("")
+	_, _, err := Any()(blankMatcherInput)
+	if err != nil {
+		if err.Error() != eofErr {
+			t.Errorf("expected %q, got %q", eofErr, err)
+		}
+	} else {
+		t.Errorf("expected %q, got no error", eofErr)
+	}
+	if err.Error() != eofErr {
+		t.Errorf("expected %q, got %q", eofErr, err)
+	}
+	lettersAndNumbersStrings := generateLettersAndNumbersStrings()
+	for _, s := range lettersAndNumbersStrings {
+		matcherInput := ds.NewMatcherInput(s)
+		match, nextInput, err := Any()(matcherInput)
+		if err != nil {
+			t.Errorf("expected no error; got %q", err)
+		}
+		expectedPosInfo := matcherInput.PosInfo
+		actualPosInfo := match.PosInfo
+		if actualPosInfo != expectedPosInfo {
+			t.Errorf(
+				"attempting to match any, expected PosInfo %v, got PosInfo %v",
+				expectedPosInfo,
+				actualPosInfo,
+			)
+		}
+		increasedInput, _ := matcherInput.AdvanceBy(1)
+		if nextInput.PosInfo != increasedInput.PosInfo {
+			t.Errorf("attempted to advance matcher and failed")
+		}
+		cr, _, _ := matcherInput.CurrentCharString()
+		if match.Matched != cr {
+			t.Errorf("attempted to match any on '%s', got '%s'", cr, match.Matched)
+		}
+	}
+}
+
 func TestMatchOnEmptyStringShouldFail(t *testing.T) {
 	lettersAndNumbers := generateLettersAndNumbersRunes()
 	for _, r := range lettersAndNumbers {
@@ -220,78 +292,6 @@ func TestNotOnNotMatchingCharacterShouldSucceed(t *testing.T) {
 		increasedInput, _ := matcherInput.AdvanceBy(1)
 		if nextInput.PosInfo != increasedInput.PosInfo {
 			t.Errorf("attempted to advance matcher and failed")
-		}
-	}
-}
-
-func TestAnyOnAnyCharacterExceptEOFShouldSucceed(t *testing.T) {
-	eofErr := errors.New("1:1: EOF").Error()
-	blankMatcherInput := ds.NewMatcherInput("")
-	_, _, err := Any()(blankMatcherInput)
-	if err != nil {
-		if err.Error() != eofErr {
-			t.Errorf("expected %q, got %q", eofErr, err)
-		}
-	} else {
-		t.Errorf("expected %q, got no error", eofErr)
-	}
-	if err.Error() != eofErr {
-		t.Errorf("expected %q, got %q", eofErr, err)
-	}
-	lettersAndNumbersStrings := generateLettersAndNumbersStrings()
-	for _, s := range lettersAndNumbersStrings {
-		matcherInput := ds.NewMatcherInput(s)
-		match, nextInput, err := Any()(matcherInput)
-		if err != nil {
-			t.Errorf("expected no error; got %q", err)
-		}
-		expectedPosInfo := matcherInput.PosInfo
-		actualPosInfo := match.PosInfo
-		if actualPosInfo != expectedPosInfo {
-			t.Errorf(
-				"attempting to match any, expected PosInfo %v, got PosInfo %v",
-				expectedPosInfo,
-				actualPosInfo,
-			)
-		}
-		increasedInput, _ := matcherInput.AdvanceBy(1)
-		if nextInput.PosInfo != increasedInput.PosInfo {
-			t.Errorf("attempted to advance matcher and failed")
-		}
-		cr, _, _ := matcherInput.CurrentCharString()
-		if match.Matched != cr {
-			t.Errorf("attempted to match any on '%s', got '%s'", cr, match.Matched)
-		}
-	}
-}
-
-func TestEOFOnAnyCharacterExceptEOFShouldFail(t *testing.T) {
-	blankMatcherInput := ds.NewMatcherInput("")
-	m, newIn, err := EOF()(blankMatcherInput)
-	if err != nil {
-		t.Errorf("expected no error, got %q", err)
-	}
-	if m.Matched != "" {
-		t.Errorf("expected blank string match, got %s", m.Matched)
-	}
-	if !m.MatchedEOF {
-		t.Error("expected MatchedEOF, got !MatchedEOF")
-	}
-	if newIn != blankMatcherInput {
-		t.Error("expected new input to match blank input")
-	}
-	lettersAndNumbersStrings := generateLettersAndNumbersStrings()
-	for _, s := range lettersAndNumbersStrings {
-		notEOFErr := fmt.Sprintf("1:1: expected EOF, got '%s'", s)
-		matcherInput := ds.NewMatcherInput(s)
-		_, _, err := EOF()(matcherInput)
-		if err == nil {
-			t.Errorf("expected %q, got no error", notEOFErr)
-			continue
-		}
-		if err.Error() != notEOFErr {
-			t.Errorf("expected %q, got %q", notEOFErr, err)
-			continue
 		}
 	}
 }

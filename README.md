@@ -26,17 +26,17 @@
 
 ### Rune Match
 
+- [ ] `EOF() datastructures.Matcher`
+  - [x] code/test
+  - [ ] example
+- [ ] `Any() datastructures.Matcher`
+  - [x] code/test
+  - [ ] example
+
 - [ ] `Single(r rune) datastructures.Matcher`
   - [x] code/test
   - [ ] example
 - [ ] `Not(r rune) datastructures.Matcher`
-  - [x] code/test
-  - [ ] example
-
-- [ ] `Any() datastructures.Matcher`
-  - [x] code/test
-  - [ ] example
-- [ ] `EOF() datastructures.Matcher`
   - [x] code/test
   - [ ] example
 
