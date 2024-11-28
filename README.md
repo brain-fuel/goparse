@@ -8,6 +8,10 @@
   - match.EOF()
   - any semantic match using one of the aforementioned EOF matchers.
 
+- Dependency Order amongst libraries should be:
+  - runematch&lt;stringmatch&lt;match&lt;semanticmatch&lt;parse
+  - Nothing on the left can have anything to its right as a dependency.
+
 ## Interface
 
 ### Data Structures (goforge.dev/tools/goparse/datastructures)
