@@ -308,7 +308,7 @@ func TestAnyOfOnNotMatchingCharacterShouldFail(t *testing.T) {
 	}
 }
 
-func TestAnyofOnMatchingCharactersShouldSucceed(t *testing.T) {
+func TestAnyOfOnMatchingCharactersShouldSucceed(t *testing.T) {
 	rs := []rune{'a', 'b', 'c', 'd', 'e'}
 	for _, r := range rs {
 		expectedMatchedString := string(r)

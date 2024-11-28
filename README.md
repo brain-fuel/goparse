@@ -51,8 +51,16 @@
   - [x] code/test
   - [ ] example
 
-- [ ] `InRange(low rune, hi rune) datastructures.Matcher`
+- [ ] `AnyOf(rs ...rune) datastructures.Matcher`
   - [x] code/test
+  - [ ] example
+- [ ] `NoneOf(rs ...rune) datastructures.Matcher`
+  - [ ] code/test
+  - [ ] example
+
+
+- [ ] `InRange(low rune, hi rune) datastructures.Matcher`
+  - [ ] code/test
   - [ ] example
 - [ ] `NotInRange(low rune, hi rune) datastructures.Matcher`
   - [ ] code/test
@@ -139,13 +147,6 @@
   - [ ] code/test
   - [ ] example
 - [ ] `NotHyphen() datastructures.Matcher`
-  - [ ] code/test
-  - [ ] example
-
-- [ ] `AnyOf(rs ...rune) datastructures.Matcher`
-  - [ ] code/test
-  - [ ] example
-- [ ] `NoneOf(rs ...rune) datastructures.Matcher`
   - [ ] code/test
   - [ ] example
 
