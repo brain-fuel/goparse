@@ -69,7 +69,7 @@ func (mi MatcherInput) AdvanceBy(n int) (MatcherInput, error) {
 	runesRemaining := mi.LengthRunes - mi.PosInfo.OffsetRunes
 	if n <= 0 {
 		return mi, errors.New(
-			"MatcherInput.AdvanceBy() requires a positive number less than the number of runes remaining",
+			"MatcherInput.AdvanceBy() requires a positive number less than the number of runes remaining, including EOF",
 		)
 	}
 	if runesRemaining-n < 0 {
@@ -133,3 +133,5 @@ type Match struct {
 }
 
 type Matcher func(MatcherInput) (Match, MatcherInput, error)
+
+type MatchFn func(MatcherInput) bool

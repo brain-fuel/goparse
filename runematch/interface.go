@@ -26,78 +26,63 @@ func EOF() ds.Matcher {
 	}
 }
 
+func eofMatchFailure(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
+	return ds.Match{}, in, ds.MatchError{
+		PosInfo: in.PosInfo,
+		Message: io.EOF.Error(),
+	}
+}
+
+func currentRuneMatch(
+	in ds.MatcherInput,
+	matchFn ds.MatchFn,
+	failureMessage string,
+) (ds.Match, ds.MatcherInput, error) {
+	actualString, _, err := in.CurrentCharString()
+	if err != nil {
+		return eofMatchFailure(in)
+	}
+	didMatch := matchFn(in)
+	if !didMatch {
+		return ds.Match{}, in, ds.MatchError{
+			PosInfo: in.PosInfo,
+			Message: failureMessage,
+		}
+	}
+	newMatch := ds.Match{
+		PosInfo: in.PosInfo,
+		Matched: actualString,
+	}
+	advancedInput, _ := in.AdvanceBy(1)
+	return newMatch, advancedInput, nil
+}
+
 func Any() ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		actualString, _, err := in.CurrentCharString()
-		if err != nil {
-			return ds.Match{}, in, ds.MatchError{
-				PosInfo: in.PosInfo,
-				Message: io.EOF.Error(),
-			}
-		}
-		newMatch := ds.Match{
-			PosInfo: in.PosInfo,
-			Matched: actualString,
-		}
-		advancedInput, err := in.AdvanceBy(1)
-		if err != nil {
-			return newMatch, in, err
-		}
-		return newMatch, advancedInput, nil
+		matchFn := func(ds.MatcherInput) bool { return true }
+		return currentRuneMatch(in, matchFn, "")
 	}
 }
 
 func Single(expected rune) ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		actualString, _, err := in.CurrentCharString()
-		if err != nil {
-			return ds.Match{}, in, ds.MatchError{
-				PosInfo: in.PosInfo,
-				Message: io.EOF.Error(),
-			}
+		actualString, _, _ := in.CurrentCharString()
+		matchFn := func(ds.MatcherInput) bool {
+			return string(expected) == actualString
 		}
-		if string(expected) != actualString {
-			return ds.Match{}, in, ds.MatchError{
-				PosInfo: in.PosInfo,
-				Message: fmt.Sprintf("expected '%c', got '%s'", expected, actualString),
-			}
-		}
-		newMatch := ds.Match{
-			PosInfo: in.PosInfo,
-			Matched: actualString,
-		}
-		advancedInput, err := in.AdvanceBy(1)
-		if err != nil {
-			return newMatch, in, err
-		}
-		return newMatch, advancedInput, nil
+		failureMessage := fmt.Sprintf("expected '%c', got '%s'", expected, actualString)
+		return currentRuneMatch(in, matchFn, failureMessage)
 	}
 }
 
 func Not(expected rune) ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		actualString, _, err := in.CurrentCharString()
-		if err != nil {
-			return ds.Match{}, in, ds.MatchError{
-				PosInfo: in.PosInfo,
-				Message: io.EOF.Error(),
-			}
+		actualString, _, _ := in.CurrentCharString()
+		matchFn := func(ds.MatcherInput) bool {
+			return string(expected) != actualString
 		}
-		if string(expected) == actualString {
-			return ds.Match{}, in, ds.MatchError{
-				PosInfo: in.PosInfo,
-				Message: fmt.Sprintf("expected not '%c', got '%s'", expected, actualString),
-			}
-		}
-		newMatch := ds.Match{
-			PosInfo: in.PosInfo,
-			Matched: actualString,
-		}
-		advancedInput, err := in.AdvanceBy(1)
-		if err != nil {
-			return newMatch, in, err
-		}
-		return newMatch, advancedInput, nil
+		failureMessage := fmt.Sprintf("expected not '%c', got '%s'", expected, actualString)
+		return currentRuneMatch(in, matchFn, failureMessage)
 	}
 }
 
