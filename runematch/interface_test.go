@@ -337,3 +337,44 @@ func TestAnyOfOnMatchingCharactersShouldSucceed(t *testing.T) {
 		}
 	}
 }
+
+func TestNoneOfOnMatchingCharactersShouldFail(t *testing.T) {
+	expectedErr := fmt.Sprintf("1:1: expected none of ['a', 'b', 'c', 'd', 'e'], got 'a'")
+	matcherInput := ds.NewMatcherInput("abacadaba")
+	_, _, err := NoneOf('a', 'b', 'c', 'd', 'e')(matcherInput)
+	if err == nil {
+		t.Errorf("expected %q, got no error", expectedErr)
+	}
+	if err.Error() != expectedErr {
+		t.Errorf("expected %q, got %q", expectedErr, err)
+	}
+}
+
+func TestNoneOfOnNotMatchingCharactersShouldSucceed(t *testing.T) {
+	rs := []rune{'b', 'c', 'd', 'e', 'f'}
+	matcherInput := ds.NewMatcherInput("abacadaba")
+	match, _, err := NoneOf(rs...)(matcherInput)
+	if err != nil {
+		t.Errorf("expected no error; got %q", err)
+	}
+	expectedPosInfo := matcherInput.PosInfo
+	actualPosInfo := match.PosInfo
+	if actualPosInfo != expectedPosInfo {
+		t.Errorf(
+			"attempting to match none of ['a', 'b', 'c', 'd', 'e'], expected PosInfo %v, got PosInfo %v",
+			expectedPosInfo,
+			actualPosInfo,
+		)
+	}
+	actualMatchedString := match.Matched
+	for _, r := range rs {
+		expectedFailMatchString := string(r)
+		if actualMatchedString == expectedFailMatchString {
+			t.Errorf(
+				"attempting to match none of ['a', 'b', 'c', 'd', 'e'], expected Matched %v, got Matched %v",
+				expectedFailMatchString,
+				actualMatchedString,
+			)
+		}
+	}
+}

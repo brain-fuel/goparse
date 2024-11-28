@@ -116,7 +116,25 @@ func AnyOf(rs ...rune) ds.Matcher {
 
 func NoneOf(rs ...rune) ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
+		actualString, _, _ := in.CurrentCharString()
+		matchFn := func(ds.MatcherInput) bool {
+			for _, r := range rs {
+				if string(r) == actualString {
+					return false
+				}
+			}
+			return true
+		}
+		var runeStrings []string
+		for _, r := range rs {
+			runeStrings = append(runeStrings, fmt.Sprintf("'%c'", r))
+		}
+		failureMessage := fmt.Sprintf(
+			"expected none of [%s], got '%s'",
+			strings.Join(runeStrings, ", "),
+			actualString,
+		)
+		return currentRuneMatch(in, matchFn, failureMessage)
 	}
 }
 

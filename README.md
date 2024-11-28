@@ -55,7 +55,7 @@
   - [x] code/test
   - [ ] example
 - [ ] `NoneOf(rs ...rune) datastructures.Matcher`
-  - [ ] code/test
+  - [x] code/test
   - [ ] example
 
 
