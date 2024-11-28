@@ -14,6 +14,8 @@
 
 ## Interface
 
+### Errors (goforge.dev/tools/goparse/errors)
+
 ### Data Structures (goforge.dev/tools/goparse/datastructures)
 
 ### Rune Match (goforge.dev/tools/goparse/runematch)
@@ -27,6 +29,11 @@
 ### Parse (goforge.dev/tools/goparse/parse)
 
 ## TODO
+
+### To Figure Out:
+
+- Where does Matcher Combinator fit into the dependency order
+- Where does Parser Combinator fit into the dependency order
 
 ### Rune Match
 
