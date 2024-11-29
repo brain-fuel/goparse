@@ -90,7 +90,7 @@ func Not(expected rune) ds.Matcher {
 	}
 }
 
-func inRangeOfRunes(rs ...rune) func(ds.MatcherInput) bool {
+func matchesOneOf(rs ...rune) func(ds.MatcherInput) bool {
 	return func(in ds.MatcherInput) bool {
 		actualString, _, _ := in.CurrentCharString()
 		for _, r := range rs {
@@ -102,15 +102,15 @@ func inRangeOfRunes(rs ...rune) func(ds.MatcherInput) bool {
 	}
 }
 
-func notInRangeOfRunes(rs ...rune) func(ds.MatcherInput) bool {
+func doesNotMatchOneOf(rs ...rune) func(ds.MatcherInput) bool {
 	return func(in ds.MatcherInput) bool {
-		return !inRangeOfRunes(rs...)(in)
+		return !matchesOneOf(rs...)(in)
 	}
 }
 
 func AnyOf(rs ...rune) ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		matchFn := inRangeOfRunes(rs...)
+		matchFn := matchesOneOf(rs...)
 		var runeStrings []string
 		for _, r := range rs {
 			runeStrings = append(runeStrings, fmt.Sprintf("'%c'", r))
@@ -125,7 +125,7 @@ func AnyOf(rs ...rune) ds.Matcher {
 
 func NoneOf(rs ...rune) ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		matchFn := notInRangeOfRunes(rs...)
+		matchFn := doesNotMatchOneOf(rs...)
 		runeStrings := make([]string, len(rs))
 		for idx, r := range rs {
 			runeStrings[idx] = fmt.Sprintf("'%c'", r)
@@ -138,14 +138,29 @@ func NoneOf(rs ...rune) ds.Matcher {
 	}
 }
 
+func matchInRangeOf(r1 rune, r2 rune) func(ds.MatcherInput) bool {
+	lo := min(r1, r2)
+	hi := max(r1, r2)
+	return func(in ds.MatcherInput) bool {
+		actualRune, _, _ := in.CurrentRune()
+		return lo <= actualRune && actualRune <= hi
+	}
+}
+
+func matchNotInRangeOf(r1 rune, r2 rune) func(ds.MatcherInput) bool {
+	lo := min(r1, r2)
+	hi := max(r1, r2)
+	return func(in ds.MatcherInput) bool {
+		actualRune, _, _ := in.CurrentRune()
+		return hi < actualRune || actualRune < lo
+	}
+}
+
 func InRange(r1 rune, r2 rune) ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
+		matchFn := matchInRangeOf(r1, r2)
 		lo := min(r1, r2)
 		hi := max(r1, r2)
-		matchFn := func(in ds.MatcherInput) bool {
-			actualRune, _, _ := in.CurrentRune()
-			return lo <= actualRune && actualRune <= hi
-		}
 		expectation := fmt.Sprintf(
 			"rune in range ['%c', '%c']",
 			lo,
@@ -157,12 +172,9 @@ func InRange(r1 rune, r2 rune) ds.Matcher {
 
 func NotInRange(r1 rune, r2 rune) ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
+		matchFn := matchNotInRangeOf(r1, r2)
 		lo := min(r1, r2)
 		hi := max(r1, r2)
-		matchFn := func(in ds.MatcherInput) bool {
-			actualRune, _, _ := in.CurrentRune()
-			return actualRune < lo || hi < actualRune
-		}
 		expectation := fmt.Sprintf(
 			"rune not in range ['%c', '%c']",
 			lo,
