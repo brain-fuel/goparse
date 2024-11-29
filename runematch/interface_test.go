@@ -250,7 +250,7 @@ func TestMatchOnSingleCharacterShouldAdvancePosInfo(t *testing.T) {
 }
 
 func TestNotOnMatchingCharacterShouldFail(t *testing.T) {
-	expectedErr := fmt.Sprintf("1:1: expected not 'a', got 'a'")
+	expectedErr := "1:1: expected not 'a', got 'a'"
 	matcherInput := ds.NewMatcherInput("a")
 	_, _, err := Not('a')(matcherInput)
 	if err == nil {
@@ -304,7 +304,7 @@ func TestNotOnNotMatchingCharacterShouldSucceed(t *testing.T) {
 }
 
 func TestAnyOfOnNotMatchingCharacterShouldFail(t *testing.T) {
-	expectedErr := fmt.Sprintf("1:1: expected any of ['b', 'c', 'd', 'e', 'f'], got 'a'")
+	expectedErr := "1:1: expected any of ['b', 'c', 'd', 'e', 'f'], got 'a'"
 	matcherInput := ds.NewMatcherInput("abacadaba")
 	_, _, err := AnyOf('b', 'c', 'd', 'e', 'f')(matcherInput)
 	if err == nil {
@@ -348,7 +348,7 @@ func TestAnyOfOnMatchingCharactersShouldSucceed(t *testing.T) {
 }
 
 func TestNoneOfOnMatchingCharactersShouldFail(t *testing.T) {
-	expectedErr := fmt.Sprintf("1:1: expected none of ['a', 'b', 'c', 'd', 'e'], got 'a'")
+	expectedErr := "1:1: expected none of ['a', 'b', 'c', 'd', 'e'], got 'a'"
 	matcherInput := ds.NewMatcherInput("abacadaba")
 	_, _, err := NoneOf('a', 'b', 'c', 'd', 'e')(matcherInput)
 	if err == nil {
@@ -391,7 +391,7 @@ func TestNoneOfOnNotMatchingCharactersShouldSucceed(t *testing.T) {
 }
 
 func TestInRangeOnCharOutOfRangeShouldFail(t *testing.T) {
-	expectedErr := fmt.Sprintf("1:1: expected rune in range ['b', 'f'], got 'a'")
+	expectedErr := "1:1: expected rune in range ['b', 'f'], got 'a'"
 	matcherInput := ds.NewMatcherInput("abacadaba")
 	_, _, err := InRange('b', 'f')(matcherInput)
 	if err == nil {
@@ -425,6 +425,46 @@ func TestInRangeOnCharInRangeShouldSucceed(t *testing.T) {
 		t.Errorf(
 			"attempting to match range of ['a', 'e'], expected Matched %v, got Matched %v",
 			expectedMatchedString,
+			actualMatchedString,
+		)
+	}
+}
+
+func TestNotInRangeOnCharInRangeShouldFail(t *testing.T) {
+	expectedErr := "1:1: expected rune not in range ['a', 'e'], got 'a'"
+	matcherInput := ds.NewMatcherInput("abacadaba")
+	_, _, err := NotInRange('a', 'e')(matcherInput)
+	if err == nil {
+		t.Errorf("expected %q, got no error", expectedErr)
+	}
+	if err != nil {
+		if err.Error() != expectedErr {
+			t.Errorf("expected %q, got %q", expectedErr, err)
+		}
+	}
+}
+
+func TestNotInRangeOnCharNotInRangeShouldSucceed(t *testing.T) {
+	matcherInput := ds.NewMatcherInput("fbacadaba")
+	expectedFailMatchString := "a"
+	match, _, err := NotInRange('a', 'e')(matcherInput)
+	if err != nil {
+		t.Errorf("expected no error; got %q", err)
+	}
+	expectedPosInfo := matcherInput.PosInfo
+	actualPosInfo := match.PosInfo
+	if actualPosInfo != expectedPosInfo {
+		t.Errorf(
+			"attempting to match not in range ['a', 'e'], expected PosInfo %v, got PosInfo %v",
+			expectedPosInfo,
+			actualPosInfo,
+		)
+	}
+	actualMatchedString := match.Matched
+	if actualMatchedString == expectedFailMatchString {
+		t.Errorf(
+			"attempting to match not in range ['a', 'e'], expected Matched %v, got Matched %v",
+			expectedFailMatchString,
 			actualMatchedString,
 		)
 	}
