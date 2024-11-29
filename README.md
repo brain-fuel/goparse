@@ -59,10 +59,10 @@
   - [ ] example
 
 
-- [ ] `InRange(low rune, hi rune) datastructures.Matcher`
-  - [ ] code/test
+- [ ] `InRange(r1 rune, r2 rune) datastructures.Matcher`
+  - [x] code/test
   - [ ] example
-- [ ] `NotInRange(low rune, hi rune) datastructures.Matcher`
+- [ ] `NotInRange(r1 rune, r2 rune) datastructures.Matcher`
   - [ ] code/test
   - [ ] example
 

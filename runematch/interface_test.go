@@ -64,9 +64,11 @@ func TestEOFOnAnyCharacterExceptEOFShouldFail(t *testing.T) {
 			t.Errorf("expected %q, got no error", notEOFErr)
 			continue
 		}
-		if err.Error() != notEOFErr {
-			t.Errorf("expected %q, got %q", notEOFErr, err)
-			continue
+		if err != nil {
+			if err.Error() != notEOFErr {
+				t.Errorf("expected %q, got %q", notEOFErr, err)
+				continue
+			}
 		}
 	}
 }
@@ -81,9 +83,6 @@ func TestAnyOnAnyCharacterExceptEOFShouldSucceed(t *testing.T) {
 		}
 	} else {
 		t.Errorf("expected %q, got no error", eofErr)
-	}
-	if err.Error() != eofErr {
-		t.Errorf("expected %q, got %q", eofErr, err)
 	}
 	lettersAndNumbersStrings := generateLettersAndNumbersStrings()
 	for _, s := range lettersAndNumbersStrings {
@@ -122,8 +121,10 @@ func TestMatchOnEmptyStringShouldFail(t *testing.T) {
 			t.Errorf("expected %q, got no error", expectedErr)
 			continue
 		}
-		if err.Error() != expectedErr {
-			t.Errorf("expected %q, got %q", expectedErr, err.Error())
+		if err != nil {
+			if err.Error() != expectedErr {
+				t.Errorf("expected %q, got %q", expectedErr, err.Error())
+			}
 		}
 	}
 }
@@ -138,8 +139,10 @@ func TestFailingMatchShouldResultInSameMatcherInput(t *testing.T) {
 			t.Errorf("expected %q, got no error", expectedErr)
 			continue
 		}
-		if err.Error() != expectedErr {
-			t.Errorf("expected %q, got %q", expectedErr, err.Error())
+		if err != nil {
+			if err.Error() != expectedErr {
+				t.Errorf("expected %q, got %q", expectedErr, err.Error())
+			}
 		}
 		if input != matcherInput {
 			t.Errorf("expected new matcher input to be %v, got %v", matcherInput, input)
@@ -157,8 +160,10 @@ func TestMatchOnSingleCharacterStringsShouldFail(t *testing.T) {
 			t.Errorf("expected %q; got no error", expectedErr)
 			continue
 		}
-		if err.Error() != expectedErr {
-			t.Errorf("expected %q; got %q", expectedErr, err.Error())
+		if err != nil {
+			if err.Error() != expectedErr {
+				t.Errorf("expected %q; got %q", expectedErr, err.Error())
+			}
 		}
 	}
 }
@@ -251,8 +256,10 @@ func TestNotOnMatchingCharacterShouldFail(t *testing.T) {
 	if err == nil {
 		t.Errorf("expected %q, got no error", expectedErr)
 	}
-	if err.Error() != expectedErr {
-		t.Errorf("expected %q, got %q", expectedErr, err)
+	if err != nil {
+		if err.Error() != expectedErr {
+			t.Errorf("expected %q, got %q", expectedErr, err)
+		}
 	}
 }
 
@@ -303,8 +310,10 @@ func TestAnyOfOnNotMatchingCharacterShouldFail(t *testing.T) {
 	if err == nil {
 		t.Errorf("expected %q, got no error", expectedErr)
 	}
-	if err.Error() != expectedErr {
-		t.Errorf("expected %q, got %q", expectedErr, err)
+	if err != nil {
+		if err.Error() != expectedErr {
+			t.Errorf("expected %q, got %q", expectedErr, err)
+		}
 	}
 }
 
@@ -345,8 +354,10 @@ func TestNoneOfOnMatchingCharactersShouldFail(t *testing.T) {
 	if err == nil {
 		t.Errorf("expected %q, got no error", expectedErr)
 	}
-	if err.Error() != expectedErr {
-		t.Errorf("expected %q, got %q", expectedErr, err)
+	if err != nil {
+		if err.Error() != expectedErr {
+			t.Errorf("expected %q, got %q", expectedErr, err)
+		}
 	}
 }
 
@@ -376,5 +387,45 @@ func TestNoneOfOnNotMatchingCharactersShouldSucceed(t *testing.T) {
 				actualMatchedString,
 			)
 		}
+	}
+}
+
+func TestInRangeOnCharOutOfRangeShouldFail(t *testing.T) {
+	expectedErr := fmt.Sprintf("1:1: expected rune in range ['b', 'f'], got 'a'")
+	matcherInput := ds.NewMatcherInput("abacadaba")
+	_, _, err := InRange('b', 'f')(matcherInput)
+	if err == nil {
+		t.Errorf("expected %q, got no error", expectedErr)
+	}
+	if err != nil {
+		if err.Error() != expectedErr {
+			t.Errorf("expected %q, got %q", expectedErr, err)
+		}
+	}
+}
+
+func TestInRangeOnCharInRangeShouldSucceed(t *testing.T) {
+	matcherInput := ds.NewMatcherInput("abacadaba")
+	expectedMatchedString := "a"
+	match, _, err := InRange('a', 'e')(matcherInput)
+	if err != nil {
+		t.Errorf("expected no error; got %q", err)
+	}
+	expectedPosInfo := matcherInput.PosInfo
+	actualPosInfo := match.PosInfo
+	if actualPosInfo != expectedPosInfo {
+		t.Errorf(
+			"attempting to match range of ['a', 'e'], expected PosInfo %v, got PosInfo %v",
+			expectedPosInfo,
+			actualPosInfo,
+		)
+	}
+	actualMatchedString := match.Matched
+	if actualMatchedString != expectedMatchedString {
+		t.Errorf(
+			"attempting to match range of ['a', 'e'], expected Matched %v, got Matched %v",
+			expectedMatchedString,
+			actualMatchedString,
+		)
 	}
 }

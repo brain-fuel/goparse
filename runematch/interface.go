@@ -90,17 +90,28 @@ func Not(expected rune) ds.Matcher {
 	}
 }
 
+func inRangeOfRunes(rs ...rune) func(ds.MatcherInput) bool {
+	return func(in ds.MatcherInput) bool {
+		actualString, _, _ := in.CurrentCharString()
+		for _, r := range rs {
+			if string(r) == actualString {
+				return true
+			}
+		}
+		return false
+	}
+}
+
+func notInRangeOfRunes(rs ...rune) func(ds.MatcherInput) bool {
+	return func(in ds.MatcherInput) bool {
+		return !inRangeOfRunes(rs...)(in)
+	}
+}
+
 func AnyOf(rs ...rune) ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
 		actualString, _, _ := in.CurrentCharString()
-		matchFn := func(ds.MatcherInput) bool {
-			for _, r := range rs {
-				if string(r) == actualString {
-					return true
-				}
-			}
-			return false
-		}
+		matchFn := inRangeOfRunes(rs...)
 		var runeStrings []string
 		for _, r := range rs {
 			runeStrings = append(runeStrings, fmt.Sprintf("'%c'", r))
@@ -117,17 +128,10 @@ func AnyOf(rs ...rune) ds.Matcher {
 func NoneOf(rs ...rune) ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
 		actualString, _, _ := in.CurrentCharString()
-		matchFn := func(ds.MatcherInput) bool {
-			for _, r := range rs {
-				if string(r) == actualString {
-					return false
-				}
-			}
-			return true
-		}
-		var runeStrings []string
-		for _, r := range rs {
-			runeStrings = append(runeStrings, fmt.Sprintf("'%c'", r))
+		matchFn := notInRangeOfRunes(rs...)
+		runeStrings := make([]string, len(rs))
+		for idx, r := range rs {
+			runeStrings[idx] = fmt.Sprintf("'%c'", r)
 		}
 		failureMessage := fmt.Sprintf(
 			"expected none of [%s], got '%s'",
@@ -138,13 +142,26 @@ func NoneOf(rs ...rune) ds.Matcher {
 	}
 }
 
-func InRange(low rune, hi rune) ds.Matcher {
+func InRange(r1 rune, r2 rune) ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
+		actualRune, _, _ := in.CurrentRune()
+		actualString, _, _ := in.CurrentCharString()
+		lo := min(r1, r2)
+		hi := max(r1, r2)
+		matchFn := func(in ds.MatcherInput) bool {
+			return actualRune <= hi && lo <= actualRune
+		}
+		failureMessage := fmt.Sprintf(
+			"expected rune in range ['%c', '%c'], got '%s'",
+			lo,
+			hi,
+			actualString,
+		)
+		return currentRuneMatch(in, matchFn, failureMessage)
 	}
 }
 
-func NotInRange(low rune, hi rune) ds.Matcher {
+func NotInRange(lo rune, hi rune) ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
 		return ds.Match{}, ds.MatcherInput{}, errors.New("Not implemented yet")
 	}
