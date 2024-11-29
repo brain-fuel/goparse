@@ -30,6 +30,10 @@
 
 ## TODO
 
+### Important changes
+
+- Ensure that each matcher gets an "expected" field from which the failure and success messages can be made: e.g. "expected rune in range ['a', 'z']"
+
 ### To Figure Out:
 
 - Where does Matcher Combinator fit into the dependency order
