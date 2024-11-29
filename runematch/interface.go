@@ -19,9 +19,10 @@ func EOF() ds.Matcher {
 			}
 		}
 		newMatch := ds.Match{
-			PosInfo:    in.PosInfo,
-			Matched:    "",
-			MatchedEOF: true,
+			PosInfo:     in.PosInfo,
+			Matched:     "",
+			MatchedEOF:  true,
+			Description: "EOF",
 		}
 		return newMatch, in, nil
 	}
@@ -37,9 +38,10 @@ func eofMatchFailure(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
 func currentRuneMatch(
 	in ds.MatcherInput,
 	matchFn ds.MatchFn,
-	failureMessage string,
+	expectation string,
 ) (ds.Match, ds.MatcherInput, error) {
 	actualString, _, err := in.CurrentCharString()
+	failureMessage := fmt.Sprintf("expected %s, got '%s'", expectation, actualString)
 	if err != nil {
 		return eofMatchFailure(in)
 	}
@@ -51,8 +53,9 @@ func currentRuneMatch(
 		}
 	}
 	newMatch := ds.Match{
-		PosInfo: in.PosInfo,
-		Matched: actualString,
+		PosInfo:     in.PosInfo,
+		Matched:     actualString,
+		Description: expectation,
 	}
 	advancedInput, _ := in.AdvanceBy(1)
 	return newMatch, advancedInput, nil
@@ -71,11 +74,8 @@ func Single(expected rune) ds.Matcher {
 		matchFn := func(ds.MatcherInput) bool {
 			return string(expected) == actualString
 		}
-		failureMessage := fmt.Sprintf(
-			"expected '%c', got '%s'",
-			expected,
-			actualString)
-		return currentRuneMatch(in, matchFn, failureMessage)
+		expectation := fmt.Sprintf("'%c'", expected)
+		return currentRuneMatch(in, matchFn, expectation)
 	}
 }
 
@@ -85,8 +85,8 @@ func Not(expected rune) ds.Matcher {
 		matchFn := func(ds.MatcherInput) bool {
 			return string(expected) != actualString
 		}
-		failureMessage := fmt.Sprintf("expected not '%c', got '%s'", expected, actualString)
-		return currentRuneMatch(in, matchFn, failureMessage)
+		expectation := fmt.Sprintf("not '%c'", expected)
+		return currentRuneMatch(in, matchFn, expectation)
 	}
 }
 
@@ -110,71 +110,65 @@ func notInRangeOfRunes(rs ...rune) func(ds.MatcherInput) bool {
 
 func AnyOf(rs ...rune) ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		actualString, _, _ := in.CurrentCharString()
 		matchFn := inRangeOfRunes(rs...)
 		var runeStrings []string
 		for _, r := range rs {
 			runeStrings = append(runeStrings, fmt.Sprintf("'%c'", r))
 		}
-		failureMessage := fmt.Sprintf(
-			"expected any of [%s], got '%s'",
+		expectation := fmt.Sprintf(
+			"any of [%s]",
 			strings.Join(runeStrings, ", "),
-			actualString,
 		)
-		return currentRuneMatch(in, matchFn, failureMessage)
+		return currentRuneMatch(in, matchFn, expectation)
 	}
 }
 
 func NoneOf(rs ...rune) ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		actualString, _, _ := in.CurrentCharString()
 		matchFn := notInRangeOfRunes(rs...)
 		runeStrings := make([]string, len(rs))
 		for idx, r := range rs {
 			runeStrings[idx] = fmt.Sprintf("'%c'", r)
 		}
-		failureMessage := fmt.Sprintf(
-			"expected none of [%s], got '%s'",
+		expectation := fmt.Sprintf(
+			"none of [%s]",
 			strings.Join(runeStrings, ", "),
-			actualString,
 		)
-		return currentRuneMatch(in, matchFn, failureMessage)
+		return currentRuneMatch(in, matchFn, expectation)
 	}
 }
 
 func InRange(r1 rune, r2 rune) ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		actualRune, _, _ := in.CurrentRune()
 		lo := min(r1, r2)
 		hi := max(r1, r2)
 		matchFn := func(in ds.MatcherInput) bool {
+			actualRune, _, _ := in.CurrentRune()
 			return lo <= actualRune && actualRune <= hi
 		}
-		failureMessage := fmt.Sprintf(
-			"expected rune in range ['%c', '%c'], got '%c'",
+		expectation := fmt.Sprintf(
+			"rune in range ['%c', '%c']",
 			lo,
 			hi,
-			actualRune,
 		)
-		return currentRuneMatch(in, matchFn, failureMessage)
+		return currentRuneMatch(in, matchFn, expectation)
 	}
 }
 
 func NotInRange(r1 rune, r2 rune) ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		actualRune, _, _ := in.CurrentRune()
 		lo := min(r1, r2)
 		hi := max(r1, r2)
 		matchFn := func(in ds.MatcherInput) bool {
+			actualRune, _, _ := in.CurrentRune()
 			return actualRune < lo || hi < actualRune
 		}
-		failureMessage := fmt.Sprintf(
-			"expected rune not in range ['%c', '%c'], got '%c'",
+		expectation := fmt.Sprintf(
+			"rune not in range ['%c', '%c']",
 			lo,
 			hi,
-			actualRune,
 		)
-		return currentRuneMatch(in, matchFn, failureMessage)
+		return currentRuneMatch(in, matchFn, expectation)
 	}
 }
 

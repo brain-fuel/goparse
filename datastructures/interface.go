@@ -127,11 +127,18 @@ func (e MatchError) Error() string {
 }
 
 type Match struct {
-	PosInfo    PosInfo
-	Matched    string
-	MatchedEOF bool
+	PosInfo     PosInfo
+	Matched     string
+	MatchedEOF  bool
+	Description string
 }
 
 type Matcher func(MatcherInput) (Match, MatcherInput, error)
 
 type MatchFn func(MatcherInput) bool
+
+type SMatcher struct {
+	MatchFn MatchFn
+}
+
+func (m SMatcher) Run() {}
