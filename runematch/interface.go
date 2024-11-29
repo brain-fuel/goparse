@@ -70,8 +70,8 @@ func Any() ds.Matcher {
 
 func Single(expected rune) ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		actualString, _, _ := in.CurrentCharString()
 		matchFn := func(ds.MatcherInput) bool {
+			actualString, _, _ := in.CurrentCharString()
 			return string(expected) == actualString
 		}
 		expectation := fmt.Sprintf("'%c'", expected)
@@ -81,8 +81,8 @@ func Single(expected rune) ds.Matcher {
 
 func Not(expected rune) ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-		actualString, _, _ := in.CurrentCharString()
 		matchFn := func(ds.MatcherInput) bool {
+			actualString, _, _ := in.CurrentCharString()
 			return string(expected) != actualString
 		}
 		expectation := fmt.Sprintf("not '%c'", expected)
@@ -111,9 +111,9 @@ func doesNotMatchOneOf(rs ...rune) func(ds.MatcherInput) bool {
 func AnyOf(rs ...rune) ds.Matcher {
 	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
 		matchFn := matchesOneOf(rs...)
-		var runeStrings []string
-		for _, r := range rs {
-			runeStrings = append(runeStrings, fmt.Sprintf("'%c'", r))
+		runeStrings := make([]string, len(rs))
+		for idx, r := range rs {
+			runeStrings[idx] = fmt.Sprintf("'%c'", r)
 		}
 		expectation := fmt.Sprintf(
 			"any of [%s]",
