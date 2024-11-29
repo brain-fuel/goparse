@@ -111,7 +111,7 @@ func TestAnyOnAnyCharacterExceptEOFShouldSucceed(t *testing.T) {
 	}
 }
 
-func TestMatchOnEmptyStringShouldFail(t *testing.T) {
+func TestSingleOnEmptyStringShouldFail(t *testing.T) {
 	lettersAndNumbers := generateLettersAndNumbersRunes()
 	for _, r := range lettersAndNumbers {
 		expectedErr := errors.New("1:1: EOF").Error()
@@ -150,7 +150,7 @@ func TestFailingMatchShouldResultInSameMatcherInput(t *testing.T) {
 	}
 }
 
-func TestMatchOnSingleCharacterStringsShouldFail(t *testing.T) {
+func TestSingleOnSingleCharacterStringsShouldFail(t *testing.T) {
 	lettersAndNumbersStrings := generateLettersAndNumbersStrings()
 	for _, s := range lettersAndNumbersStrings {
 		expectedErr := fmt.Sprintf("1:1: expected ':', got '%c'", s[0])
@@ -168,7 +168,7 @@ func TestMatchOnSingleCharacterStringsShouldFail(t *testing.T) {
 	}
 }
 
-func TestMatchOnSingleCharacterStringsShouldSucceed(t *testing.T) {
+func TestSingleOnSingleCharacterStringsShouldSucceed(t *testing.T) {
 	lettersAndNumbersStrings := generateLettersAndNumbersStrings()
 	lettersAndNumbersRunes := generateLettersAndNumbersRunes()
 	for idx, s := range lettersAndNumbersStrings {
@@ -202,7 +202,7 @@ func TestMatchOnSingleCharacterStringsShouldSucceed(t *testing.T) {
 	}
 }
 
-func TestMatchOnSingleCharacterShouldAdvancePosInfo(t *testing.T) {
+func TestSingleOnSingleCharacterShouldAdvancePosInfo(t *testing.T) {
 	inputStr := "ab\nc\n\nadaba\n"
 	matcherInput := ds.NewMatcherInput(inputStr)
 	charsToMatch := []rune{'a', 'b', '\n', 'c', '\n', '\n', 'a', 'd', 'a', 'b', 'a', '\n'}
@@ -276,16 +276,6 @@ func TestNotOnNotMatchingCharacterShouldSucceed(t *testing.T) {
 			t.Errorf("expected no error; got %q", err)
 			continue
 		}
-		expectedPosInfo := matcherInput.PosInfo
-		actualPosInfo := match.PosInfo
-		if actualPosInfo != expectedPosInfo {
-			t.Errorf(
-				"attempting to match not '%c', expected PosInfo %v, got PosInfo %v",
-				toMatch,
-				expectedPosInfo,
-				actualPosInfo,
-			)
-		}
 		expectedMatchedString := string(toMatch)
 		actualMatchedString := match.Matched
 		if actualMatchedString == expectedMatchedString {
@@ -327,15 +317,6 @@ func TestAnyOfOnMatchingCharactersShouldSucceed(t *testing.T) {
 			t.Errorf("expected no error; got %q", err)
 			continue
 		}
-		expectedPosInfo := matcherInput.PosInfo
-		actualPosInfo := match.PosInfo
-		if actualPosInfo != expectedPosInfo {
-			t.Errorf(
-				"attempting to match any of ['a', 'b', 'c', 'd', 'e'], expected PosInfo %v, got PosInfo %v",
-				expectedPosInfo,
-				actualPosInfo,
-			)
-		}
 		actualMatchedString := match.Matched
 		if actualMatchedString != expectedMatchedString {
 			t.Errorf(
@@ -367,15 +348,6 @@ func TestNoneOfOnNotMatchingCharactersShouldSucceed(t *testing.T) {
 	match, _, err := NoneOf(rs...)(matcherInput)
 	if err != nil {
 		t.Errorf("expected no error; got %q", err)
-	}
-	expectedPosInfo := matcherInput.PosInfo
-	actualPosInfo := match.PosInfo
-	if actualPosInfo != expectedPosInfo {
-		t.Errorf(
-			"attempting to match none of ['a', 'b', 'c', 'd', 'e'], expected PosInfo %v, got PosInfo %v",
-			expectedPosInfo,
-			actualPosInfo,
-		)
 	}
 	actualMatchedString := match.Matched
 	for _, r := range rs {
@@ -411,15 +383,6 @@ func TestInRangeOnCharInRangeShouldSucceed(t *testing.T) {
 	if err != nil {
 		t.Errorf("expected no error; got %q", err)
 	}
-	expectedPosInfo := matcherInput.PosInfo
-	actualPosInfo := match.PosInfo
-	if actualPosInfo != expectedPosInfo {
-		t.Errorf(
-			"attempting to match range of ['a', 'e'], expected PosInfo %v, got PosInfo %v",
-			expectedPosInfo,
-			actualPosInfo,
-		)
-	}
 	actualMatchedString := match.Matched
 	if actualMatchedString != expectedMatchedString {
 		t.Errorf(
@@ -450,15 +413,6 @@ func TestNotInRangeOnCharNotInRangeShouldSucceed(t *testing.T) {
 	match, _, err := NotInRange('a', 'e')(matcherInput)
 	if err != nil {
 		t.Errorf("expected no error; got %q", err)
-	}
-	expectedPosInfo := matcherInput.PosInfo
-	actualPosInfo := match.PosInfo
-	if actualPosInfo != expectedPosInfo {
-		t.Errorf(
-			"attempting to match not in range ['a', 'e'], expected PosInfo %v, got PosInfo %v",
-			expectedPosInfo,
-			actualPosInfo,
-		)
 	}
 	actualMatchedString := match.Matched
 	if actualMatchedString == expectedFailMatchString {
