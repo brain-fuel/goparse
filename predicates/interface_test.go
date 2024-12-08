@@ -65,90 +65,130 @@ func ExampleRune() {
 	// MatchRes{type: SUCCESS_RUNE, dldist: 0, odldist: {0 0}, match: "世", rest: "界"}
 }
 
-func ExampleStr() {
-	toMatch1 := "世界"
-
-	failureInput1_1 := ""
-	expectedFailMatch1_1 := Str(toMatch1)(failureInput1_1)
-	fmt.Printf("Failure: %v\n", expectedFailMatch1_1)
-
-	failureInput1_2 := "abacadaba"
-	expectedFailMatch1_2 := Str(toMatch1)(failureInput1_2)
-	fmt.Printf("Failure: %v\n", expectedFailMatch1_2)
-
-	failureInput1_3 := "123abc"
-	expectedFailMatch1_3 := Str(toMatch1)(failureInput1_3)
-	fmt.Printf("Failure: %v\n", expectedFailMatch1_3)
-
-	failureInput1_4 := "世"
-	expectedFailMatch1_4 := Str(toMatch1)(failureInput1_4)
-	fmt.Printf("Failure: %v\n", expectedFailMatch1_4)
-
-	failureInput1_5 := "界"
-	expectedFailMatch1_5 := Str(toMatch1)(failureInput1_5)
-	fmt.Printf("Failure: %v\n", expectedFailMatch1_5)
-
-	successfulInput1_1 := "世界"
-	expectedSuccessMatch1_1 := Str(toMatch1)(successfulInput1_1)
-	fmt.Printf("Success: %v\n", expectedSuccessMatch1_1)
-
-	successfulInput1_2 := "世界abacadaba"
-	expectedSuccessMatch1_2 := Str(toMatch1)(successfulInput1_2)
-	fmt.Printf("Success: %v\n", expectedSuccessMatch1_2)
-
-	successfulInput1_3 := "世界123abc"
-	expectedSuccessMatch1_3 := Str(toMatch1)(successfulInput1_3)
-	fmt.Printf("Success: %v\n", expectedSuccessMatch1_3)
-
-	// --------------------
-	toMatch2 := "secondmatch"
-
-	failureInput2_1 := ""
-	expectedFailMatch2_1 := Str(toMatch2)(failureInput2_1)
-	fmt.Printf("Failure: %v\n", expectedFailMatch2_1)
-
-	failureInput2_2 := "abacadaba"
-	expectedFailMatch2_2 := Str(toMatch2)(failureInput2_2)
-	fmt.Printf("Failure: %v\n", expectedFailMatch2_2)
-
-	failureInput2_3 := "secondm@tc"
-	expectedFailMatch2_3 := Str(toMatch2)(failureInput2_3)
-	fmt.Printf("Failure: %v\n", expectedFailMatch2_3)
-
-	failureInput2_4 := "secondm@tch"
-	expectedFailMatch2_4 := Str(toMatch2)(failureInput2_4)
-	fmt.Printf("Failure: %v\n", expectedFailMatch2_4)
-
-	failureInput2_5 := "secondm@tch123abc"
-	expectedFailMatch2_5 := Str(toMatch2)(failureInput2_5)
-	fmt.Printf("Failure: %v\n", expectedFailMatch2_5)
-
-	successfulInput2_1 := "secondmatch"
-	expectedSuccessMatch2_1 := Str(toMatch2)(successfulInput2_1)
-	fmt.Printf("Success: %v\n", expectedSuccessMatch2_1)
-
-	successfulInput2_2 := "secondmatch123"
-	expectedSuccessMatch2_2 := Str(toMatch2)(successfulInput2_2)
-	fmt.Printf("Success: %v\n", expectedSuccessMatch2_2)
-
-	successfulInput2_3 := "secondmatchabacadaba"
-	expectedSuccessMatch2_3 := Str(toMatch2)(successfulInput2_3)
-	fmt.Printf("Success: %v\n", expectedSuccessMatch2_3)
-
+func ExampleStr_fail01() {
+	toMatch := "世界"
+	failureInput := ""
+	expectedFailMatch := Str(toMatch)(failureInput)
+	fmt.Printf("Failure: %v\n", expectedFailMatch)
 	// Output: Failure: MatchRes{type: FAILURE_EOF, dldist: 2, odldist: {0 2}, match: "", rest: ""}
-	// Failure: MatchRes{type: FAILURE_NO_MATCH, dldist: 2, odldist: {2 0}, match: "", rest: "abacadaba"}
-	// Failure: MatchRes{type: FAILURE_NO_MATCH, dldist: 2, odldist: {2 0}, match: "", rest: "123abc"}
-	// Failure: MatchRes{type: FAILURE_MATCH_THEN_EOF, dldist: 1, odldist: {0 1}, match: "", rest: "世"}
-	// Failure: MatchRes{type: FAILURE_NEAR_MISS_THEN_EOF, dldist: 1, odldist: {1 1}, match: "", rest: "界"}
-	// Success: MatchRes{type: SUCCESS_STRING, dldist: 0, odldist: {0 0}, match: "世界", rest: ""}
-	// Success: MatchRes{type: SUCCESS_STRING, dldist: 0, odldist: {0 0}, match: "世界", rest: "abacadaba"}
-	// Success: MatchRes{type: SUCCESS_STRING, dldist: 0, odldist: {0 0}, match: "世界", rest: "123abc"}
-	// Failure: MatchRes{type: FAILURE_EOF, dldist: 11, odldist: {0 11}, match: "", rest: ""}
-	// Failure: MatchRes{type: FAILURE_NO_MATCH_THEN_EOF, dldist: 9, odldist: {8 2}, match: "", rest: "abacadaba"}
-	// Failure: MatchRes{type: FAILURE_NEAR_MISS_THEN_EOF, dldist: 2, odldist: {1 1}, match: "", rest: "secondm@tc"}
-	// Failure: MatchRes{type: FAILURE_NEAR_MISS, dldist: 1, odldist: {1 0}, match: "", rest: "secondm@tch"}
-	// Failure: MatchRes{type: FAILURE_NEAR_MISS, dldist: 1, odldist: {1 0}, match: "", rest: "secondm@tch123abc"}
-	// Success: MatchRes{type: SUCCESS_STRING, dldist: 0, odldist: {0 0}, match: "secondmatch", rest: ""}
-	// Success: MatchRes{type: SUCCESS_STRING, dldist: 0, odldist: {0 0}, match: "secondmatch", rest: "123"}
-	// Success: MatchRes{type: SUCCESS_STRING, dldist: 0, odldist: {0 0}, match: "secondmatch", rest: "abacadaba"}
+}
+
+func ExampleStr_fail02() {
+	toMatch := "世界"
+	failureInput := "abacadaba"
+	expectedFailMatch := Str(toMatch)(failureInput)
+	fmt.Printf("Failure: %v\n", expectedFailMatch)
+	// Output: Failure: MatchRes{type: FAILURE_NO_MATCH, dldist: 2, odldist: {2 0}, match: "", rest: "abacadaba"}
+}
+
+func ExampleStr_fail03() {
+	toMatch := "世界"
+	failureInput := "123abc"
+	expectedFailMatch := Str(toMatch)(failureInput)
+	fmt.Printf("Failure: %v\n", expectedFailMatch)
+	// Output: Failure: MatchRes{type: FAILURE_NO_MATCH, dldist: 2, odldist: {2 0}, match: "", rest: "123abc"}
+}
+
+func ExampleStr_fail04() {
+	toMatch := "世界"
+	failureInput := "世"
+	expectedFailMatch := Str(toMatch)(failureInput)
+	fmt.Printf("Failure: %v\n", expectedFailMatch)
+	// Output: Failure: MatchRes{type: FAILURE_MATCH_THEN_EOF, dldist: 1, odldist: {0 1}, match: "", rest: "世"}
+}
+
+func ExampleStr_fail05() {
+	toMatch := "世界"
+	failureInput := "界"
+	expectedFailMatch := Str(toMatch)(failureInput)
+	fmt.Printf("Failure: %v\n", expectedFailMatch)
+	// Output: Failure: MatchRes{type: FAILURE_NEAR_MISS_THEN_EOF, dldist: 1, odldist: {1 1}, match: "", rest: "界"}
+}
+
+func ExampleStr_succ01() {
+	toMatch := "世界"
+	successfulInput := "世界"
+	expectedSuccessMatch := Str(toMatch)(successfulInput)
+	fmt.Printf("Success: %v\n", expectedSuccessMatch)
+	// Output: Success: MatchRes{type: SUCCESS_STRING, dldist: 0, odldist: {0 0}, match: "世界", rest: ""}
+}
+
+func ExampleStr_succ02() {
+	toMatch := "世界"
+	successfulInput := "世界abacadaba"
+	expectedSuccessMatch := Str(toMatch)(successfulInput)
+	fmt.Printf("Success: %v\n", expectedSuccessMatch)
+	// Output: Success: MatchRes{type: SUCCESS_STRING, dldist: 0, odldist: {0 0}, match: "世界", rest: "abacadaba"}
+}
+
+func ExampleStr_succ03() {
+	toMatch := "世界"
+	successfulInput := "世界123abc"
+	expectedSuccessMatch := Str(toMatch)(successfulInput)
+	fmt.Printf("Success: %v\n", expectedSuccessMatch)
+	// Output: Success: MatchRes{type: SUCCESS_STRING, dldist: 0, odldist: {0 0}, match: "世界", rest: "123abc"}
+}
+
+func ExampleStr_fail06() {
+	toMatch := "secondmatch"
+	failureInput := ""
+	expectedFailMatch := Str(toMatch)(failureInput)
+	fmt.Printf("Failure: %v\n", expectedFailMatch)
+	// Output: Failure: MatchRes{type: FAILURE_EOF, dldist: 11, odldist: {0 11}, match: "", rest: ""}
+}
+
+func ExampleStr_fail07() {
+	toMatch := "secondmatch"
+	failureInput := "abacadaba"
+	expectedFailMatch := Str(toMatch)(failureInput)
+	fmt.Printf("Failure: %v\n", expectedFailMatch)
+	// Output: Failure: MatchRes{type: FAILURE_NO_MATCH_THEN_EOF, dldist: 9, odldist: {8 2}, match: "", rest: "abacadaba"}
+}
+
+func ExampleStr_fail08() {
+	toMatch := "secondmatch"
+	failureInput := "secondm@tc"
+	expectedFailMatch := Str(toMatch)(failureInput)
+	fmt.Printf("Failure: %v\n", expectedFailMatch)
+	// Output: Failure: MatchRes{type: FAILURE_NEAR_MISS_THEN_EOF, dldist: 2, odldist: {1 1}, match: "", rest: "secondm@tc"}
+}
+
+func ExampleStr_fail09() {
+	toMatch := "secondmatch"
+	failureInput := "secondm@tch"
+	expectedFailMatch := Str(toMatch)(failureInput)
+	fmt.Printf("Failure: %v\n", expectedFailMatch)
+	// Output: Failure: MatchRes{type: FAILURE_NEAR_MISS, dldist: 1, odldist: {1 0}, match: "", rest: "secondm@tch"}
+}
+
+func ExampleStr_fail10() {
+	toMatch := "secondmatch"
+	failureInput := "secondm@tch123abc"
+	expectedFailMatch := Str(toMatch)(failureInput)
+	fmt.Printf("Failure: %v\n", expectedFailMatch)
+	// Output: Failure: MatchRes{type: FAILURE_NEAR_MISS, dldist: 1, odldist: {1 0}, match: "", rest: "secondm@tch123abc"}
+}
+
+func ExampleStr_succ04() {
+	toMatch := "secondmatch"
+	successfulInput := "secondmatch"
+	expectedSuccessMatch := Str(toMatch)(successfulInput)
+	fmt.Printf("Success: %v\n", expectedSuccessMatch)
+	// Output: Success: MatchRes{type: SUCCESS_STRING, dldist: 0, odldist: {0 0}, match: "secondmatch", rest: ""}
+}
+
+func ExampleStr_succ05() {
+	toMatch := "secondmatch"
+	successfulInput := "secondmatch123"
+	expectedSuccessMatch := Str(toMatch)(successfulInput)
+	fmt.Printf("Success: %v\n", expectedSuccessMatch)
+	// Output: Success: MatchRes{type: SUCCESS_STRING, dldist: 0, odldist: {0 0}, match: "secondmatch", rest: "123"}
+}
+
+func ExampleStr_succ06() {
+	toMatch := "secondmatch"
+	successfulInput := "secondmatchabacadaba"
+	expectedSuccessMatch := Str(toMatch)(successfulInput)
+	fmt.Printf("Success: %v\n", expectedSuccessMatch)
+	// Output: Success: MatchRes{type: SUCCESS_STRING, dldist: 0, odldist: {0 0}, match: "secondmatch", rest: "abacadaba"}
 }

@@ -27,6 +27,10 @@ func (p Pair[T]) Right() T {
 	return p.right
 }
 
+func (p Pair[T]) ToTuple() (T, T) {
+	return p.left, p.right
+}
+
 type MatchType int
 
 const (
@@ -152,31 +156,8 @@ func NewMatchSuccess(mt MatchType, actual string, rest string) MatchRes {
 }
 
 func NewMatchFailure(mt MatchType, dldist int, odldist Pair[int], rest string) MatchRes {
-	var matchType MatchType
-	switch mt {
-	case SUCCESS_EOF:
-		matchType = FAILURE_OTHER
-	case SUCCESS_RUNE:
-		matchType = FAILURE_OTHER
-	case SUCCESS_STRING:
-		matchType = FAILURE_OTHER
-	case SUCCESS_REGEXP:
-		matchType = FAILURE_OTHER
-	case SUCCESS_SEMANTIC:
-		matchType = FAILURE_OTHER
-	case SUCCESS_OTHER:
-		matchType = FAILURE_OTHER
-	case FAILURE_EOF:
-		matchType = mt
-	case FAILURE_NO_MATCH:
-		matchType = mt
-	case FAILURE_OTHER:
-		matchType = mt
-	default:
-		matchType = FAILURE_OTHER
-	}
 	return MatchRes{
-		matchType: matchType,
+		matchType: mt,
 		dldist:    dldist,
 		odldist:   odldist,
 		match:     "",
