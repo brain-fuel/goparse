@@ -46,28 +46,52 @@ func ExampleAnyRune_succeedingInput03() {
 	// Output: MatchRes{type: SUCCESS_RUNE, dldist: 0, odldist: {0 0}, match: "世", rest: "界"}
 }
 
-func ExampleRune() {
+func ExampleRune_failingInput01() {
 	toMatch := '世'
-
 	failingInput1 := ""
-	failingInput2 := "abacadaba"
-	failingInput3 := "123abc"
-	succeedingInput := "世界"
-
 	expectedFailingMatch1 := Rune(toMatch)(failingInput1)
-	expectedFailingMatch2 := Rune(toMatch)(failingInput2)
-	expectedFailingMatch3 := Rune(toMatch)(failingInput3)
-	expectedSucceedingMatch := Rune(toMatch)(succeedingInput)
-
 	fmt.Println(expectedFailingMatch1)
-	fmt.Println(expectedFailingMatch2)
-	fmt.Println(expectedFailingMatch3)
-	fmt.Println(expectedSucceedingMatch)
-
 	// Output: MatchRes{type: FAILURE_EOF, dldist: 1, odldist: {0 1}, match: "", rest: ""}
-	// MatchRes{type: FAILURE_NO_MATCH, dldist: 9, odldist: {1 8}, match: "", rest: "abacadaba"}
-	// MatchRes{type: FAILURE_NO_MATCH, dldist: 6, odldist: {1 5}, match: "", rest: "123abc"}
-	// MatchRes{type: SUCCESS_RUNE, dldist: 0, odldist: {0 0}, match: "世", rest: "界"}
+}
+
+func ExampleRune_failingInput02() {
+	toMatch := '世'
+	failingInput2 := "abacadaba"
+	expectedFailingMatch2 := Rune(toMatch)(failingInput2)
+	fmt.Println(expectedFailingMatch2)
+	// Output: MatchRes{type: FAILURE_NO_MATCH, dldist: 9, odldist: {1 8}, match: "", rest: "abacadaba"}
+}
+
+func ExampleRune_failingInput03() {
+	toMatch := '世'
+	failingInput3 := "123abc"
+	expectedFailingMatch3 := Rune(toMatch)(failingInput3)
+	fmt.Println(expectedFailingMatch3)
+	// Output: MatchRes{type: FAILURE_NO_MATCH, dldist: 6, odldist: {1 5}, match: "", rest: "123abc"}
+}
+
+func ExampleRune_succeedingInput01() {
+	toMatch := '世'
+	succeedingInput := "世界"
+	expectedSucceedingMatch := Rune(toMatch)(succeedingInput)
+	fmt.Println(expectedSucceedingMatch)
+	// Output: MatchRes{type: SUCCESS_RUNE, dldist: 0, odldist: {0 0}, match: "世", rest: "界"}
+}
+
+func ExampleRune_succeedingInput02() {
+	toMatch := '世'
+	succeedingInput := "世界abc"
+	expectedSucceedingMatch := Rune(toMatch)(succeedingInput)
+	fmt.Println(expectedSucceedingMatch)
+	// Output: MatchRes{type: SUCCESS_RUNE, dldist: 0, odldist: {0 0}, match: "世", rest: "界abc"}
+}
+
+func ExampleRune_succeedingInput03() {
+	toMatch := '世'
+	succeedingInput := "世界123"
+	expectedSucceedingMatch := Rune(toMatch)(succeedingInput)
+	fmt.Println(expectedSucceedingMatch)
+	// Output: MatchRes{type: SUCCESS_RUNE, dldist: 0, odldist: {0 0}, match: "世", rest: "界123"}
 }
 
 func ExampleStr_failingInput01() {
