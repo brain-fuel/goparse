@@ -41,7 +41,7 @@ func generateLettersAndNumbersStrings() []string {
 // Tests
 
 func TestEOFOnAnyCharacterExceptEOFShouldFail(t *testing.T) {
-	blankMatcherInput := ds.NewMatcherInput("")
+	blankMatcherInput := ds.InitMatchStage("")
 	m, newIn, err := EOF()(blankMatcherInput)
 	if err != nil {
 		t.Errorf("expected no error, got %q", err)
@@ -59,6 +59,7 @@ func TestEOFOnAnyCharacterExceptEOFShouldFail(t *testing.T) {
 	for _, s := range lettersAndNumbersStrings {
 		notEOFErr := fmt.Sprintf("1:1: expected EOF, got '%s'", s)
 		matcherInput := ds.NewMatcherInput(s)
+		matchStage := 
 		_, _, err := EOF()(matcherInput)
 		if err == nil {
 			t.Errorf("expected %q, got no error", notEOFErr)

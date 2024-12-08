@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"strings"
 	"unicode/utf8"
 )
 
@@ -39,7 +38,7 @@ type MatcherInput struct {
 
 func NewMatcherInput(s string) MatcherInput {
 	return MatcherInput{
-		Source:      strings.ReplaceAll(s, "\r\n", "\n"),
+		Source:      s,
 		LengthBytes: len(s),
 		LengthRunes: utf8.RuneCountInString(s),
 		PosInfo:     NewPosInfo(),
@@ -69,7 +68,7 @@ func (mi MatcherInput) AdvanceBy(n int) (MatcherInput, error) {
 	runesRemaining := mi.LengthRunes - mi.PosInfo.OffsetRunes
 	if n <= 0 {
 		return mi, errors.New(
-			"MatcherInput.AdvanceBy() requires a positive number less than the number of runes remaining, including EOF",
+			"AdvanceBy() requires a positive number less than the number of runes remaining, including EOF",
 		)
 	}
 	if runesRemaining-n < 0 {
@@ -107,6 +106,10 @@ func (mi MatcherInput) AdvanceBy(n int) (MatcherInput, error) {
 	}, nil
 }
 
+func (mi MatcherInput) Run(m Matcher) (Match, MatcherInput, error) {
+	return m(mi)
+}
+
 type MatchError struct {
 	InputIdentifier string
 	PosInfo         PosInfo
@@ -133,12 +136,62 @@ type Match struct {
 	Description string
 }
 
-type Matcher func(MatcherInput) (Match, MatcherInput, error)
+type Matcher func(MatchStage) MatchStage
 
 type MatchFn func(MatcherInput) bool
 
-type SMatcher struct {
-	MatchFn MatchFn
+type M3 struct {
+	Matcher Matcher
 }
 
-func (m SMatcher) Run() {}
+func (m M3) Run(ms MatchStage) MatchStage {
+	return m.Matcher(ms)
+}
+
+// MatcherInput needs to be the triple so that the Run()s can be chained
+
+type MatchStage struct {
+	Match        Match
+	MatcherInput MatcherInput
+	Errs         []error
+}
+
+func InitMatchStage(input string) MatchStage {
+	return MatchStage{
+		Match:        Match{},
+		MatcherInput: NewMatcherInput(input),
+		Errs:         []error{},
+	}
+}
+
+func (ms MatchStage) CurrentPos() (int, int) {
+	return ms.MatcherInput.CurrentPos()
+}
+
+func (ms MatchStage) CurrentRune() (int, int) {
+	return ms.MatcherInput.CurrentPos()
+}
+
+func (ms MatchStage) CurrentCharString() (string, int, error) {
+	return ms.MatcherInput.CurrentCharString()
+}
+
+func (ms MatchStage) AdvanceBy(n int) MatchStage {
+	newMi, err := ms.MatcherInput.AdvanceBy(n)
+	if err != nil {
+		return MatchStage{
+			Match:        ms.Match,
+			MatcherInput: ms.MatcherInput,
+			Errs:         append(ms.Errs, err),
+		}
+	}
+	return MatchStage{
+		Match:        ms.Match,
+		MatcherInput: newMi,
+		Errs:         ms.Errs,
+	}
+}
+
+func (ms MatchStage) Run(m Matcher) MatchStage {
+	return m(ms)
+}

@@ -10,28 +10,42 @@ import (
 )
 
 func EOF() ds.Matcher {
-	return func(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
+	return func(in ds.MatchStage) ds.MatchStage {
 		actualString, _, err := in.CurrentCharString()
 		if err == nil {
-			return ds.Match{}, in, ds.MatchError{
-				PosInfo: in.PosInfo,
+			me := ds.MatchError{
+				PosInfo: in.MatcherInput.PosInfo,
 				Message: fmt.Sprintf("expected EOF, got '%s'", actualString),
+			}
+			return ds.MatchStage{
+				Match:        ds.Match{},
+				MatcherInput: in.MatcherInput,
+				Errs:         append(in.Errs, me),
 			}
 		}
 		newMatch := ds.Match{
-			PosInfo:     in.PosInfo,
+			PosInfo:     in.MatcherInfo.PosInfo,
 			Matched:     "",
 			MatchedEOF:  true,
 			Description: "EOF",
 		}
-		return newMatch, in, nil
+		return ds.MatchStage{
+			Match:        newMatch,
+			MatcherInput: in.MatcherInput,
+			Errs:         in.Errs,
+		}
 	}
 }
 
-func eofMatchFailure(in ds.MatcherInput) (ds.Match, ds.MatcherInput, error) {
-	return ds.Match{}, in, ds.MatchError{
+func eofMatchFailure(in ds.MatchStage) ds.MatchStage {
+	err := ds.MatchError {
 		PosInfo: in.PosInfo,
 		Message: io.EOF.Error(),
+	}
+	return ds.MatchStage{
+		Match: ds.Match{}
+		MatcherInput: in.MatcherInput,
+		Errs: append(in.Errs, err)
 	}
 }
 
@@ -90,7 +104,7 @@ func Not(expected rune) ds.Matcher {
 	}
 }
 
-func matchesOneOf(rs ...rune) func(ds.MatcherInput) bool {
+func matchesOneOf(rs ...rune) ds.MatchFn {
 	return func(in ds.MatcherInput) bool {
 		actualString, _, _ := in.CurrentCharString()
 		for _, r := range rs {
@@ -102,7 +116,7 @@ func matchesOneOf(rs ...rune) func(ds.MatcherInput) bool {
 	}
 }
 
-func doesNotMatchOneOf(rs ...rune) func(ds.MatcherInput) bool {
+func doesNotMatchOneOf(rs ...rune) ds.MatchFn {
 	return func(in ds.MatcherInput) bool {
 		return !matchesOneOf(rs...)(in)
 	}
@@ -138,7 +152,7 @@ func NoneOf(rs ...rune) ds.Matcher {
 	}
 }
 
-func matchInRangeOf(r1 rune, r2 rune) func(ds.MatcherInput) bool {
+func matchInRangeOf(r1 rune, r2 rune) ds.MatchFn {
 	lo := min(r1, r2)
 	hi := max(r1, r2)
 	return func(in ds.MatcherInput) bool {
@@ -147,7 +161,7 @@ func matchInRangeOf(r1 rune, r2 rune) func(ds.MatcherInput) bool {
 	}
 }
 
-func matchNotInRangeOf(r1 rune, r2 rune) func(ds.MatcherInput) bool {
+func matchNotInRangeOf(r1 rune, r2 rune) ds.MatchFn {
 	lo := min(r1, r2)
 	hi := max(r1, r2)
 	return func(in ds.MatcherInput) bool {
