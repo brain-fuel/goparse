@@ -65,7 +65,7 @@ func ExampleRune() {
 	// MatchRes{type: SUCCESS_RUNE, dldist: 0, odldist: {0 0}, match: "世", rest: "界"}
 }
 
-func ExampleStr_match_with_failing_input_01() {
+func ExampleStr_matchWithFailingInput_01() {
 	toMatch := "世界"
 	failureInput := ""
 	expectedFailMatch := Str(toMatch)(failureInput)
@@ -73,7 +73,7 @@ func ExampleStr_match_with_failing_input_01() {
 	// Output: Failure: MatchRes{type: FAILURE_EOF, dldist: 2, odldist: {0 2}, match: "", rest: ""}
 }
 
-func ExampleStr_match_with_failing_input_02() {
+func ExampleStr_matchWithFailingInput_02() {
 	toMatch := "世界"
 	failureInput := "abacadaba"
 	expectedFailMatch := Str(toMatch)(failureInput)
@@ -81,7 +81,7 @@ func ExampleStr_match_with_failing_input_02() {
 	// Output: Failure: MatchRes{type: FAILURE_NO_MATCH, dldist: 2, odldist: {2 0}, match: "", rest: "abacadaba"}
 }
 
-func ExampleStr_match_with_failing_input_03() {
+func ExampleStr_matchWithFailingInput_03() {
 	toMatch := "世界"
 	failureInput := "123abc"
 	expectedFailMatch := Str(toMatch)(failureInput)
@@ -89,7 +89,7 @@ func ExampleStr_match_with_failing_input_03() {
 	// Output: Failure: MatchRes{type: FAILURE_NO_MATCH, dldist: 2, odldist: {2 0}, match: "", rest: "123abc"}
 }
 
-func ExampleStr_match_with_failing_input_04() {
+func ExampleStr_matchWithFailingInput_04() {
 	toMatch := "世界"
 	failureInput := "世"
 	expectedFailMatch := Str(toMatch)(failureInput)
@@ -97,7 +97,7 @@ func ExampleStr_match_with_failing_input_04() {
 	// Output: Failure: MatchRes{type: FAILURE_MATCH_THEN_EOF, dldist: 1, odldist: {0 1}, match: "", rest: "世"}
 }
 
-func ExampleStr_match_with_failing_input_05() {
+func ExampleStr_matchWithFailingInput_05() {
 	toMatch := "世界"
 	failureInput := "界"
 	expectedFailMatch := Str(toMatch)(failureInput)
@@ -105,7 +105,7 @@ func ExampleStr_match_with_failing_input_05() {
 	// Output: Failure: MatchRes{type: FAILURE_NEAR_MISS_THEN_EOF, dldist: 1, odldist: {1 1}, match: "", rest: "界"}
 }
 
-func ExampleStr_match_with_succeeding_input_01() {
+func ExampleStr_matchWithSucceedingInput_01() {
 	toMatch := "世界"
 	succeedingInput := "世界"
 	expectedSuccessMatch := Str(toMatch)(succeedingInput)
@@ -113,7 +113,7 @@ func ExampleStr_match_with_succeeding_input_01() {
 	// Output: Success: MatchRes{type: SUCCESS_STRING, dldist: 0, odldist: {0 0}, match: "世界", rest: ""}
 }
 
-func ExampleStr_match_with_succeeding_input_02() {
+func ExampleStr_matchWithSucceedingInput_02() {
 	toMatch := "世界"
 	succeedingInput := "世界abacadaba"
 	expectedSuccessMatch := Str(toMatch)(succeedingInput)
@@ -121,7 +121,7 @@ func ExampleStr_match_with_succeeding_input_02() {
 	// Output: Success: MatchRes{type: SUCCESS_STRING, dldist: 0, odldist: {0 0}, match: "世界", rest: "abacadaba"}
 }
 
-func ExampleStr_match_with_succeeding_input_03() {
+func ExampleStr_matchWithSucceedingInput_03() {
 	toMatch := "世界"
 	succeedingInput := "世界123abc"
 	expectedSuccessMatch := Str(toMatch)(succeedingInput)
@@ -129,7 +129,7 @@ func ExampleStr_match_with_succeeding_input_03() {
 	// Output: Success: MatchRes{type: SUCCESS_STRING, dldist: 0, odldist: {0 0}, match: "世界", rest: "123abc"}
 }
 
-func ExampleStr_match_with_failing_input_06() {
+func ExampleStr_matchWithFailingInput_06() {
 	toMatch := "secondmatch"
 	failureInput := ""
 	expectedFailMatch := Str(toMatch)(failureInput)
@@ -137,7 +137,7 @@ func ExampleStr_match_with_failing_input_06() {
 	// Output: Failure: MatchRes{type: FAILURE_EOF, dldist: 11, odldist: {0 11}, match: "", rest: ""}
 }
 
-func ExampleStr_match_with_failing_input_07() {
+func ExampleStr_matchWithFailingInput_07() {
 	toMatch := "secondmatch"
 	failureInput := "abacadaba"
 	expectedFailMatch := Str(toMatch)(failureInput)
@@ -145,7 +145,7 @@ func ExampleStr_match_with_failing_input_07() {
 	// Output: Failure: MatchRes{type: FAILURE_NO_MATCH_THEN_EOF, dldist: 9, odldist: {8 2}, match: "", rest: "abacadaba"}
 }
 
-func ExampleStr_match_with_failing_input_08() {
+func ExampleStr_matchWithFailingInput_08() {
 	toMatch := "secondmatch"
 	failureInput := "secondm@tc"
 	expectedFailMatch := Str(toMatch)(failureInput)
@@ -153,7 +153,7 @@ func ExampleStr_match_with_failing_input_08() {
 	// Output: Failure: MatchRes{type: FAILURE_NEAR_MISS_THEN_EOF, dldist: 2, odldist: {1 1}, match: "", rest: "secondm@tc"}
 }
 
-func ExampleStr_match_with_failing_input_09() {
+func ExampleStr_matchWithFailingInput_09() {
 	toMatch := "secondmatch"
 	failureInput := "secondm@tch"
 	expectedFailMatch := Str(toMatch)(failureInput)
@@ -161,7 +161,7 @@ func ExampleStr_match_with_failing_input_09() {
 	// Output: Failure: MatchRes{type: FAILURE_NEAR_MISS, dldist: 1, odldist: {1 0}, match: "", rest: "secondm@tch"}
 }
 
-func ExampleStr_match_with_failing_input_10() {
+func ExampleStr_matchWithFailingInput_10() {
 	toMatch := "secondmatch"
 	failureInput := "secondm@tch123abc"
 	expectedFailMatch := Str(toMatch)(failureInput)
@@ -169,7 +169,7 @@ func ExampleStr_match_with_failing_input_10() {
 	// Output: Failure: MatchRes{type: FAILURE_NEAR_MISS, dldist: 1, odldist: {1 0}, match: "", rest: "secondm@tch123abc"}
 }
 
-func ExampleStr_match_with_succeeding_input_04() {
+func ExampleStr_matchWithSucceedingInput_04() {
 	toMatch := "secondmatch"
 	succeedingInput := "secondmatch"
 	expectedSuccessMatch := Str(toMatch)(succeedingInput)
@@ -177,7 +177,7 @@ func ExampleStr_match_with_succeeding_input_04() {
 	// Output: Success: MatchRes{type: SUCCESS_STRING, dldist: 0, odldist: {0 0}, match: "secondmatch", rest: ""}
 }
 
-func ExampleStr_match_with_succeeding_input_05() {
+func ExampleStr_matchWithSucceedingInput_05() {
 	toMatch := "secondmatch"
 	succeedingInput := "secondmatch123"
 	expectedSuccessMatch := Str(toMatch)(succeedingInput)
@@ -185,7 +185,7 @@ func ExampleStr_match_with_succeeding_input_05() {
 	// Output: Success: MatchRes{type: SUCCESS_STRING, dldist: 0, odldist: {0 0}, match: "secondmatch", rest: "123"}
 }
 
-func ExampleStr_match_with_succeeding_input_06() {
+func ExampleStr_matchWithSucceedingInput_06() {
 	toMatch := "secondmatch"
 	succeedingInput := "secondmatchabacadaba"
 	expectedSuccessMatch := Str(toMatch)(succeedingInput)
