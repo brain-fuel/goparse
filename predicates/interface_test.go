@@ -18,27 +18,32 @@ func ExampleEOF() {
 	// MatchRes{type: SUCCESS_EOF, dldist: 0, odldist: {0 0}, match: "", rest: ""}
 }
 
-func ExampleAnyRune() {
+func ExampleAnyRune_failingInput() {
 	failingInput := ""
-
-	succeedingInput1 := "abacadaba"
-	succeedingInput2 := "123abc"
-	succeedingInput3 := "世界"
-
 	expectedFailingMatch := AnyRune()(failingInput)
-	expectedSucceedingMatch1 := AnyRune()(succeedingInput1)
-	expectedSucceedingMatch2 := AnyRune()(succeedingInput2)
-	expectedSucceedingMatch3 := AnyRune()(succeedingInput3)
-
 	fmt.Println(expectedFailingMatch)
-	fmt.Println(expectedSucceedingMatch1)
-	fmt.Println(expectedSucceedingMatch2)
-	fmt.Println(expectedSucceedingMatch3)
-
 	// Output: MatchRes{type: FAILURE_EOF, dldist: 1, odldist: {0 1}, match: "", rest: ""}
-	// MatchRes{type: SUCCESS_RUNE, dldist: 0, odldist: {0 0}, match: "a", rest: "bacadaba"}
-	// MatchRes{type: SUCCESS_RUNE, dldist: 0, odldist: {0 0}, match: "1", rest: "23abc"}
-	// MatchRes{type: SUCCESS_RUNE, dldist: 0, odldist: {0 0}, match: "世", rest: "界"}
+}
+
+func ExampleAnyRune_succeedingInput01() {
+	succeedingInput1 := "abacadaba"
+	expectedSucceedingMatch1 := AnyRune()(succeedingInput1)
+	fmt.Println(expectedSucceedingMatch1)
+	// Output: MatchRes{type: SUCCESS_RUNE, dldist: 0, odldist: {0 0}, match: "a", rest: "bacadaba"}
+}
+
+func ExampleAnyRune_succeedingInput02() {
+	succeedingInput2 := "123abc"
+	expectedSucceedingMatch2 := AnyRune()(succeedingInput2)
+	fmt.Println(expectedSucceedingMatch2)
+	// Output: MatchRes{type: SUCCESS_RUNE, dldist: 0, odldist: {0 0}, match: "1", rest: "23abc"}
+}
+
+func ExampleAnyRune_succeedingInput03() {
+	succeedingInput3 := "世界"
+	expectedSucceedingMatch3 := AnyRune()(succeedingInput3)
+	fmt.Println(expectedSucceedingMatch3)
+	// Output: MatchRes{type: SUCCESS_RUNE, dldist: 0, odldist: {0 0}, match: "世", rest: "界"}
 }
 
 func ExampleRune() {
@@ -110,7 +115,7 @@ func ExampleStr_succeedingInput01() {
 	succeedingInput := "世界"
 	expectedSucceedingMatch := Str(toMatch)(succeedingInput)
 	fmt.Printf("Success: %v\n", expectedSucceedingMatch)
-	// Output: Success: MatchRes{type: SUCCESS_sTRING, dldist: 0, odldist: {0 0}, match: "世界", rest: ""}
+	// Output: Success: MatchRes{type: SUCCESS_STRING, dldist: 0, odldist: {0 0}, match: "世界", rest: ""}
 }
 
 func ExampleStr_succeedingInput02() {
@@ -118,7 +123,7 @@ func ExampleStr_succeedingInput02() {
 	succeedingInput := "世界abacadaba"
 	expectedSucceedingMatch := Str(toMatch)(succeedingInput)
 	fmt.Printf("Success: %v\n", expectedSucceedingMatch)
-	// Output: Success: MatchRes{type: SUCCESS_sTRING, dldist: 0, odldist: {0 0}, match: "世界", rest: "abacadaba"}
+	// Output: Success: MatchRes{type: SUCCESS_STRING, dldist: 0, odldist: {0 0}, match: "世界", rest: "abacadaba"}
 }
 
 func ExampleStr_succeedingInput03() {
@@ -126,7 +131,7 @@ func ExampleStr_succeedingInput03() {
 	succeedingInput := "世界123abc"
 	expectedSucceedingMatch := Str(toMatch)(succeedingInput)
 	fmt.Printf("Success: %v\n", expectedSucceedingMatch)
-	// Output: Success: MatchRes{type: SUCCESS_sTRING, dldist: 0, odldist: {0 0}, match: "世界", rest: "123abc"}
+	// Output: Success: MatchRes{type: SUCCESS_STRING, dldist: 0, odldist: {0 0}, match: "世界", rest: "123abc"}
 }
 
 func ExampleStr_failingInput06() {
@@ -174,7 +179,7 @@ func ExampleStr_succeedingInput04() {
 	succeedingInput := "secondmatch"
 	expectedSucceedingMatch := Str(toMatch)(succeedingInput)
 	fmt.Printf("Success: %v\n", expectedSucceedingMatch)
-	// Output: Success: MatchRes{type: SUCCESS_sTRING, dldist: 0, odldist: {0 0}, match: "secondmatch", rest: ""}
+	// Output: Success: MatchRes{type: SUCCESS_STRING, dldist: 0, odldist: {0 0}, match: "secondmatch", rest: ""}
 }
 
 func ExampleStr_succeedingInput05() {
@@ -182,7 +187,7 @@ func ExampleStr_succeedingInput05() {
 	succeedingInput := "secondmatch123"
 	expectedSucceedingMatch := Str(toMatch)(succeedingInput)
 	fmt.Printf("Success: %v\n", expectedSucceedingMatch)
-	// Output: Success: MatchRes{type: SUCCESS_sTRING, dldist: 0, odldist: {0 0}, match: "secondmatch", rest: "123"}
+	// Output: Success: MatchRes{type: SUCCESS_STRING, dldist: 0, odldist: {0 0}, match: "secondmatch", rest: "123"}
 }
 
 func ExampleStr_succeedingInput06() {
@@ -190,5 +195,5 @@ func ExampleStr_succeedingInput06() {
 	succeedingInput := "secondmatchabacadaba"
 	expectedSucceedingMatch := Str(toMatch)(succeedingInput)
 	fmt.Printf("Success: %v\n", expectedSucceedingMatch)
-	// Output: Success: MatchRes{type: SUCCESS_sTRING, dldist: 0, odldist: {0 0}, match: "secondmatch", rest: "abacadaba"}
+	// Output: Success: MatchRes{type: SUCCESS_STRING, dldist: 0, odldist: {0 0}, match: "secondmatch", rest: "abacadaba"}
 }
