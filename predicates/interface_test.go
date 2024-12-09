@@ -46,7 +46,7 @@ func ExampleIsAnyRune_succeedingInput03() {
 	// Output: MatchRes{type: SUCCESS_RUNE, dldist: 0, odldist: {0 0}, match: "世", rest: "界"}
 }
 
-func ExampleIsAnyRune_failingInput01() {
+func ExampleIsRune_failingInput01() {
 	toMatch := '世'
 	failingInput1 := ""
 	expectedFailingMatch1 := IsRune(toMatch)(failingInput1)
@@ -54,7 +54,7 @@ func ExampleIsAnyRune_failingInput01() {
 	// Output: MatchRes{type: FAILURE_EOF, dldist: 1, odldist: {0 1}, match: "", rest: ""}
 }
 
-func ExampleIsAnyRune_failingInput02() {
+func ExampleIsRune_failingInput02() {
 	toMatch := '世'
 	failingInput2 := "abacadaba"
 	expectedFailingMatch2 := IsRune(toMatch)(failingInput2)
@@ -62,7 +62,7 @@ func ExampleIsAnyRune_failingInput02() {
 	// Output: MatchRes{type: FAILURE_NO_MATCH, dldist: 9, odldist: {1 8}, match: "", rest: "abacadaba"}
 }
 
-func ExampleIsAnyRune_failingInput03() {
+func ExampleIsRune_failingInput03() {
 	toMatch := '世'
 	failingInput3 := "123abc"
 	expectedFailingMatch3 := IsRune(toMatch)(failingInput3)
@@ -70,7 +70,7 @@ func ExampleIsAnyRune_failingInput03() {
 	// Output: MatchRes{type: FAILURE_NO_MATCH, dldist: 6, odldist: {1 5}, match: "", rest: "123abc"}
 }
 
-func ExampleIsAnyRune_succeedingInput01() {
+func ExampleIsRune_succeedingInput01() {
 	toMatch := '世'
 	succeedingInput := "世界"
 	expectedSucceedingMatch := IsRune(toMatch)(succeedingInput)
@@ -78,7 +78,7 @@ func ExampleIsAnyRune_succeedingInput01() {
 	// Output: MatchRes{type: SUCCESS_RUNE, dldist: 0, odldist: {0 0}, match: "世", rest: "界"}
 }
 
-func ExampleIsAnyRune_succeedingInput02() {
+func ExampleIsRune_succeedingInput02() {
 	toMatch := '世'
 	succeedingInput := "世界abc"
 	expectedSucceedingMatch := IsRune(toMatch)(succeedingInput)
@@ -86,7 +86,7 @@ func ExampleIsAnyRune_succeedingInput02() {
 	// Output: MatchRes{type: SUCCESS_RUNE, dldist: 0, odldist: {0 0}, match: "世", rest: "界abc"}
 }
 
-func ExampleIsAnyRune_succeedingInput03() {
+func ExampleIsRune_succeedingInput03() {
 	toMatch := '世'
 	succeedingInput := "世界123"
 	expectedSucceedingMatch := IsRune(toMatch)(succeedingInput)
