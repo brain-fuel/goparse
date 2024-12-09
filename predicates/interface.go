@@ -49,7 +49,7 @@ func NearMissThreshold(length int) int {
 	return int(math.Floor((dt * float64(length) / 100)))
 }
 
-func EOF() types.MatchPred {
+func IsEOF() types.MatchPred {
 	return func(in string) types.MatchRes {
 		if utf8.RuneCountInString(in) != 0 {
 			return types.NewMatchFailure(types.FAILURE_EOF, DLDist(in, ""), ODLDist(in, ""), in)
@@ -58,7 +58,7 @@ func EOF() types.MatchPred {
 	}
 }
 
-func AnyRune() types.MatchPred {
+func IsAnyRune() types.MatchPred {
 	return func(in string) types.MatchRes {
 		if utf8.RuneCountInString(in) == 0 {
 			return types.NewMatchFailure(types.FAILURE_EOF, 1, types.NewPair[int](0, 1), "")
@@ -126,7 +126,7 @@ func butFirstCharInString(cs string) string {
 	return butNCharInString(1, cs)
 }
 
-func Rune(r rune) types.MatchPred {
+func IsRune(r rune) types.MatchPred {
 	return func(in string) types.MatchRes {
 		firstRune, err := firstRuneInString(in)
 		if err != nil {
@@ -153,7 +153,7 @@ func Rune(r rune) types.MatchPred {
 	}
 }
 
-func Str(toMatch string) types.MatchPred {
+func IsStr(toMatch string) types.MatchPred {
 	return func(in string) types.MatchRes {
 		inputLength := utf8.RuneCountInString(in)
 		matchLength := utf8.RuneCountInString(toMatch)
