@@ -110,8 +110,8 @@ type MatchPred func(string) MatchRes
 
 type MatchRes struct {
 	matchType MatchType
-	dldist    int
-	odldist   Pair[int]
+	dist      int
+	oDist     Pair[int]
 	match     string
 	rest      string
 }
@@ -124,10 +124,10 @@ func (mr MatchRes) GoString() string {
 		rest = string(rs[:64]) + "..."
 	}
 	return fmt.Sprintf(
-		"MatchRes{type: %s, dldist: %d, odldist: %d, match: %q, rest: %q}",
+		"MatchRes{type: %s, dist: %d, oDist: %d, match: %q, rest: %q}",
 		mr.matchType,
-		mr.dldist,
-		mr.odldist,
+		mr.dist,
+		mr.oDist,
 		mr.match,
 		rest,
 	)
@@ -148,18 +148,18 @@ func (mr MatchRes) HowManyBytesMatched() int {
 func NewMatchSuccess(mt MatchType, actual string, rest string) MatchRes {
 	return MatchRes{
 		matchType: mt,
-		dldist:    0,
-		odldist:   NewPair[int](0, 0),
+		dist:      0,
+		oDist:     NewPair[int](0, 0),
 		match:     actual,
 		rest:      rest,
 	}
 }
 
-func NewMatchFailure(mt MatchType, dldist int, odldist Pair[int], rest string) MatchRes {
+func NewMatchFailure(mt MatchType, dist int, oDist Pair[int], rest string) MatchRes {
 	return MatchRes{
 		matchType: mt,
-		dldist:    dldist,
-		odldist:   odldist,
+		dist:      dist,
+		oDist:     oDist,
 		match:     "",
 		rest:      rest,
 	}
