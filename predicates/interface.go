@@ -126,22 +126,22 @@ func butFirstCharInString(cs string) string {
 	return butNCharInString(1, cs)
 }
 
-func IsRune(r rune) types.MatchPred {
+func IsRune(toMatch rune) types.MatchPred {
 	return func(in string) types.MatchRes {
 		firstRune, err := firstRuneInString(in)
 		if err != nil {
 			return types.NewMatchFailure(
 				types.FAILURE_EOF,
-				DLDist(in, string(r)),
-				ODLDist(in, string(r)),
+				DLDist(in, string(toMatch)),
+				ODLDist(in, string(toMatch)),
 				in,
 			)
 		}
-		if firstRune != r {
+		if firstRune != toMatch {
 			return types.NewMatchFailure(
 				types.FAILURE_NO_MATCH,
-				DLDist(in, string(r)),
-				ODLDist(in, string(r)),
+				DLDist(in, string(toMatch)),
+				ODLDist(in, string(toMatch)),
 				in,
 			)
 		}
@@ -160,7 +160,7 @@ func IsStr(toMatch string) types.MatchPred {
 		matchCut := firstNRunesInString(matchLength, toMatch)
 		inputCut := firstNRunesInString(matchLength, in)
 		dldist := DLDist(matchCut, inputCut)
-		odldist := ODLDistTest(matchCut, inputCut)
+		odldist := ODLDistExpectedVsActual(matchCut, inputCut)
 		eof := inputLength == 0
 		success := dldist == 0
 		if eof {
@@ -266,7 +266,7 @@ func ODLDist(s1, s2 string) types.Pair[int] {
 	return types.NewPair[int](DLDist(s1[:minLen], s2[:minLen]), diff)
 }
 
-func ODLDistTest(expected, actual string) types.Pair[int] {
+func ODLDistExpectedVsActual(expected, actual string) types.Pair[int] {
 	lExpected := utf8.RuneCountInString(expected)
 	lActual := utf8.RuneCountInString(actual)
 	minLen := min(lExpected, lActual)
