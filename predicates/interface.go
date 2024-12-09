@@ -8,19 +8,19 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	t "goforge.dev/tools/goparse/types"
+	"goforge.dev/tools/goparse/types"
 )
 
 const (
-	NEAR_MISS_CHAR_THRESHOLD    int     = 1
-	NEAR_MISS_DECIMAL_THRESHOLD float64 = 0.25
+	NEAR_MISS_CHAR_THRESHOLD       int     = 1
+	NEAR_MISS_PERCENTAGE_THRESHOLD float64 = 25.0
 )
 
 func NearMissThresholds() (int, float64) {
 	lookupCharThreshold, ctExists := os.LookupEnv("NEAR_MISS_CHAR_THRESHOLD")
-	lookupPercentThreshold, dtExists := os.LookupEnv("NEAR_MISS_DECIMAL_THRESHOLD")
+	lookupPercentThreshold, dtExists := os.LookupEnv("NEAR_MISS_PERCENTAGE_THRESHOLD")
 	ct := NEAR_MISS_CHAR_THRESHOLD
-	dt := NEAR_MISS_DECIMAL_THRESHOLD
+	dt := NEAR_MISS_PERCENTAGE_THRESHOLD
 	if ctExists {
 		lct, err := strconv.Atoi(lookupCharThreshold)
 		if err != nil {
@@ -32,7 +32,7 @@ func NearMissThresholds() (int, float64) {
 	if dtExists {
 		ldt, err := strconv.ParseFloat(lookupPercentThreshold, 64)
 		if err != nil {
-			dt = NEAR_MISS_DECIMAL_THRESHOLD
+			dt = NEAR_MISS_PERCENTAGE_THRESHOLD
 		} else {
 			dt = ldt
 		}
@@ -46,25 +46,25 @@ func NearMissThreshold(length int) int {
 	if isShort {
 		return ct
 	}
-	return int(math.Floor((dt * float64(length))))
+	return int(math.Floor((dt * float64(length) / 100)))
 }
 
-func EOF() t.MatchPred {
-	return func(in string) t.MatchRes {
+func EOF() types.MatchPred {
+	return func(in string) types.MatchRes {
 		if utf8.RuneCountInString(in) != 0 {
-			return t.NewMatchFailure(t.FAILURE_EOF, DLDist(in, ""), ODLDist(in, ""), in)
+			return types.NewMatchFailure(types.FAILURE_EOF, DLDist(in, ""), ODLDist(in, ""), in)
 		}
-		return t.NewMatchSuccess(t.SUCCESS_EOF, "", "")
+		return types.NewMatchSuccess(types.SUCCESS_EOF, "", "")
 	}
 }
 
-func AnyRune() t.MatchPred {
-	return func(in string) t.MatchRes {
+func AnyRune() types.MatchPred {
+	return func(in string) types.MatchRes {
 		if utf8.RuneCountInString(in) == 0 {
-			return t.NewMatchFailure(t.FAILURE_EOF, 1, t.NewPair[int](0, 1), "")
+			return types.NewMatchFailure(types.FAILURE_EOF, 1, types.NewPair[int](0, 1), "")
 		}
-		return t.NewMatchSuccess(
-			t.SUCCESS_RUNE,
+		return types.NewMatchSuccess(
+			types.SUCCESS_RUNE,
 			firstCharInString(in),
 			butFirstCharInString(in),
 		)
@@ -126,31 +126,35 @@ func butFirstCharInString(cs string) string {
 	return butNCharInString(1, cs)
 }
 
-func Rune(r rune) t.MatchPred {
-	return func(in string) t.MatchRes {
+func Rune(r rune) types.MatchPred {
+	return func(in string) types.MatchRes {
 		firstRune, err := firstRuneInString(in)
 		if err != nil {
-			return t.NewMatchFailure(
-				t.FAILURE_EOF,
+			return types.NewMatchFailure(
+				types.FAILURE_EOF,
 				DLDist(in, string(r)),
 				ODLDist(in, string(r)),
 				in,
 			)
 		}
 		if firstRune != r {
-			return t.NewMatchFailure(
-				t.FAILURE_NO_MATCH,
+			return types.NewMatchFailure(
+				types.FAILURE_NO_MATCH,
 				DLDist(in, string(r)),
 				ODLDist(in, string(r)),
 				in,
 			)
 		}
-		return t.NewMatchSuccess(t.SUCCESS_RUNE, firstCharInString(in), butFirstCharInString(in))
+		return types.NewMatchSuccess(
+			types.SUCCESS_RUNE,
+			firstCharInString(in),
+			butFirstCharInString(in),
+		)
 	}
 }
 
-func Str(toMatch string) t.MatchPred {
-	return func(in string) t.MatchRes {
+func Str(toMatch string) types.MatchPred {
+	return func(in string) types.MatchRes {
 		inputLength := utf8.RuneCountInString(in)
 		matchLength := utf8.RuneCountInString(toMatch)
 		matchCut := firstNRunesInString(matchLength, toMatch)
@@ -160,32 +164,36 @@ func Str(toMatch string) t.MatchPred {
 		eof := inputLength == 0
 		success := dldist == 0
 		if eof {
-			return t.NewMatchFailure(t.FAILURE_EOF, dldist, odldist, in)
+			return types.NewMatchFailure(types.FAILURE_EOF, dldist, odldist, in)
 		}
 		if !success {
 			matchType := failMatchType(matchLength, dldist, odldist)
-			return t.NewMatchFailure(matchType, dldist, odldist, in)
+			return types.NewMatchFailure(matchType, dldist, odldist, in)
 		}
-		return t.NewMatchSuccess(t.SUCCESS_STRING, toMatch, butNCharInString(matchLength, in))
+		return types.NewMatchSuccess(
+			types.SUCCESS_STRING,
+			toMatch,
+			butNCharInString(matchLength, in),
+		)
 	}
 }
 
-func failMatchType(length int, dldist int, odldist t.Pair[int]) t.MatchType {
+func failMatchType(length int, dldist int, odldist types.Pair[int]) types.MatchType {
 	nearMissThreshold := NearMissThreshold(length)
 	ocount, lacking := odldist.ToTuple()
 	if 0 < lacking {
 		if ocount == 0 {
-			return t.FAILURE_MATCH_THEN_EOF
+			return types.FAILURE_MATCH_THEN_EOF
 		}
 		if ocount <= nearMissThreshold {
-			return t.FAILURE_NEAR_MISS_THEN_EOF
+			return types.FAILURE_NEAR_MISS_THEN_EOF
 		}
-		return t.FAILURE_NO_MATCH_THEN_EOF
+		return types.FAILURE_NO_MATCH_THEN_EOF
 	}
 	if dldist <= nearMissThreshold {
-		return t.FAILURE_NEAR_MISS
+		return types.FAILURE_NEAR_MISS
 	}
-	return t.FAILURE_NO_MATCH
+	return types.FAILURE_NO_MATCH
 }
 
 func absInt(n int) int {
@@ -250,18 +258,18 @@ func multiMin(ns ...int) int {
 	return acc
 }
 
-func ODLDist(s1, s2 string) t.Pair[int] {
+func ODLDist(s1, s2 string) types.Pair[int] {
 	l1 := utf8.RuneCountInString(s1)
 	l2 := utf8.RuneCountInString(s2)
 	minLen := min(l1, l2)
 	diff := absInt(l1 - l2)
-	return t.NewPair[int](DLDist(s1[:minLen], s2[:minLen]), diff)
+	return types.NewPair[int](DLDist(s1[:minLen], s2[:minLen]), diff)
 }
 
-func ODLDistTest(expected, actual string) t.Pair[int] {
+func ODLDistTest(expected, actual string) types.Pair[int] {
 	lExpected := utf8.RuneCountInString(expected)
 	lActual := utf8.RuneCountInString(actual)
 	minLen := min(lExpected, lActual)
 	diff := lExpected - lActual
-	return t.NewPair[int](DLDist(expected[:minLen], actual[:minLen]), diff)
+	return types.NewPair[int](DLDist(expected[:minLen], actual[:minLen]), diff)
 }
