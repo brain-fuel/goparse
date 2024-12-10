@@ -7,6 +7,26 @@ import (
 	"unicode/utf8"
 )
 
+type Distance int
+
+type Overlap int
+
+type OverlappingDistance struct {
+	dist    Distance
+	overlap Overlap
+}
+
+func NewODist(dist Distance, overlap Overlap) OverlappingDistance {
+	return OverlappingDistance{
+		dist:    dist,
+		overlap: overlap,
+	}
+}
+
+func (od OverlappingDistance) ToTuple() (Distance, Overlap) {
+	return od.dist, od.overlap
+}
+
 type Pair[T any] struct {
 	left  T
 	right T
@@ -110,8 +130,8 @@ type MatchPred func(string) MatchRes
 
 type MatchRes struct {
 	matchType MatchType
-	dist      int
-	oDist     Pair[int]
+	dist      Distance
+	oDist     OverlappingDistance
 	match     string
 	rest      string
 }
@@ -149,13 +169,13 @@ func NewMatchSuccess(mt MatchType, actual string, rest string) MatchRes {
 	return MatchRes{
 		matchType: mt,
 		dist:      0,
-		oDist:     NewPair[int](0, 0),
+		oDist:     NewODist(0, 0),
 		match:     actual,
 		rest:      rest,
 	}
 }
 
-func NewMatchFailure(mt MatchType, dist int, oDist Pair[int], rest string) MatchRes {
+func NewMatchFailure(mt MatchType, dist Distance, oDist OverlappingDistance, rest string) MatchRes {
 	return MatchRes{
 		matchType: mt,
 		dist:      dist,

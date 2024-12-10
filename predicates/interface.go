@@ -61,7 +61,7 @@ func IsEOF() types.MatchPred {
 func IsAnyRune() types.MatchPred {
 	return func(in string) types.MatchRes {
 		if utf8.RuneCountInString(in) == 0 {
-			return types.NewMatchFailure(types.FAILURE_EOF, 1, types.NewPair[int](0, 1), "")
+			return types.NewMatchFailure(types.FAILURE_EOF, 1, types.NewODist(0, 1), "")
 		}
 		return types.NewMatchSuccess(
 			types.SUCCESS_RUNE,
@@ -159,16 +159,16 @@ func IsStr(toMatch string) types.MatchPred {
 		matchLength := utf8.RuneCountInString(toMatch)
 		matchCut := firstNRunesInString(matchLength, toMatch)
 		inputCut := firstNRunesInString(matchLength, in)
-		dldist := DLDist(matchCut, inputCut)
-		odldist := ODLDistExpectedVsActual(matchCut, inputCut)
+		dist := DLDist(matchCut, inputCut)
+		oDist := ODLDistExpectedVsActual(matchCut, inputCut)
 		eof := inputLength == 0
-		success := dldist == 0
+		success := dist == 0
 		if eof {
-			return types.NewMatchFailure(types.FAILURE_EOF, dldist, odldist, in)
+			return types.NewMatchFailure(types.FAILURE_EOF, dist, oDist, in)
 		}
 		if !success {
-			matchType := failMatchType(matchLength, dldist, odldist)
-			return types.NewMatchFailure(matchType, dldist, odldist, in)
+			matchType := failMatchType(matchLength, dist, oDist)
+			return types.NewMatchFailure(matchType, dist, oDist, in)
 		}
 		return types.NewMatchSuccess(
 			types.SUCCESS_STRING,
@@ -178,19 +178,26 @@ func IsStr(toMatch string) types.MatchPred {
 	}
 }
 
-func failMatchType(length int, dldist int, odldist types.Pair[int]) types.MatchType {
+func failMatchType(
+	length int,
+	dist types.Distance,
+	oDist types.OverlappingDistance,
+) types.MatchType {
+	disti := int(dist)
 	nearMissThreshold := NearMissThreshold(length)
-	ocount, lacking := odldist.ToTuple()
-	if 0 < lacking {
-		if ocount == 0 {
+	count, overlap := oDist.ToTuple()
+	counti := int(count)
+	overlapi := int(overlap)
+	if 0 < overlapi {
+		if counti == 0 {
 			return types.FAILURE_MATCH_THEN_EOF
 		}
-		if ocount <= nearMissThreshold {
+		if counti <= nearMissThreshold {
 			return types.FAILURE_NEAR_MISS_THEN_EOF
 		}
 		return types.FAILURE_NO_MATCH_THEN_EOF
 	}
-	if dldist <= nearMissThreshold {
+	if disti <= nearMissThreshold {
 		return types.FAILURE_NEAR_MISS
 	}
 	return types.FAILURE_NO_MATCH
@@ -204,7 +211,7 @@ func absInt(n int) int {
 }
 
 // https://en.wikipedia.org/wiki/Damerau-Levenshtein_distance
-func DLDist(s1, s2 string) int {
+func DLDist(s1, s2 string) types.Distance {
 	if len(s1) == 0 {
 		return utf8.RuneCountInString(s2)
 	}
@@ -258,18 +265,18 @@ func multiMin(ns ...int) int {
 	return acc
 }
 
-func ODLDist(s1, s2 string) types.Pair[int] {
+func ODLDist(s1, s2 string) types.OverlappingDistance {
 	l1 := utf8.RuneCountInString(s1)
 	l2 := utf8.RuneCountInString(s2)
 	minLen := min(l1, l2)
 	diff := absInt(l1 - l2)
-	return types.NewPair[int](DLDist(s1[:minLen], s2[:minLen]), diff)
+	return types.NewODist(DLDist(s1[:minLen], s2[:minLen]), diff)
 }
 
-func ODLDistExpectedVsActual(expected, actual string) types.Pair[int] {
+func ODLDistExpectedVsActual(expected, actual string) types.OverlappingDistance {
 	lExpected := utf8.RuneCountInString(expected)
 	lActual := utf8.RuneCountInString(actual)
 	minLen := min(lExpected, lActual)
 	diff := lExpected - lActual
-	return types.NewPair[int](DLDist(expected[:minLen], actual[:minLen]), diff)
+	return types.NewODist(DLDist(expected[:minLen], actual[:minLen]), diff)
 }
