@@ -11,20 +11,24 @@ type Distance int
 
 type Overlap int
 
+type Leftover int
+
 type OverlappingDistance struct {
-	dist    Distance
-	overlap Overlap
+	dist     Distance
+	overlap  Overlap
+	leftover Leftover
 }
 
-func NewODist(dist Distance, overlap Overlap) OverlappingDistance {
+func NewODist(dist Distance, overlap Overlap, leftover Leftover) OverlappingDistance {
 	return OverlappingDistance{
-		dist:    dist,
-		overlap: overlap,
+		dist:     dist,
+		overlap:  overlap,
+		leftover: leftover,
 	}
 }
 
-func (od OverlappingDistance) ToTuple() (Distance, Overlap) {
-	return od.dist, od.overlap
+func (od OverlappingDistance) ToTriple() (Distance, Overlap, Leftover) {
+	return od.dist, od.overlap, od.leftover
 }
 
 type Pair[T any] struct {
@@ -47,7 +51,7 @@ func (p Pair[T]) Right() T {
 	return p.right
 }
 
-func (p Pair[T]) ToTuple() (T, T) {
+func (p Pair[T]) ToTriple() (T, T) {
 	return p.left, p.right
 }
 
@@ -63,10 +67,10 @@ const (
 
 	FAILURE_EOF
 	FAILURE_MATCH_THEN_EOF
-	FAILURE_NEAR_MISS_THEN_EOF
+	FAILURE_POTENTIAL_NEAR_MISS_THEN_EOF
 	FAILURE_NO_MATCH_THEN_EOF
 
-	FAILURE_NEAR_MISS
+	FAILURE_POTENTIAL_NEAR_MISS
 	FAILURE_NO_MATCH
 
 	FAILURE_OTHER
@@ -81,13 +85,13 @@ func (mt MatchType) GoString() string {
 		SUCCESS_SEMANTIC: "SUCCESS_SEMANTIC",
 		SUCCESS_OTHER:    "SUCCESS_OTHER",
 
-		FAILURE_EOF:                "FAILURE_EOF",
-		FAILURE_MATCH_THEN_EOF:     "FAILURE_MATCH_THEN_EOF",
-		FAILURE_NEAR_MISS_THEN_EOF: "FAILURE_NEAR_MISS_THEN_EOF",
-		FAILURE_NO_MATCH_THEN_EOF:  "FAILURE_NO_MATCH_THEN_EOF",
+		FAILURE_EOF:                          "FAILURE_EOF",
+		FAILURE_MATCH_THEN_EOF:               "FAILURE_MATCH_THEN_EOF",
+		FAILURE_POTENTIAL_NEAR_MISS_THEN_EOF: "FAILURE_POTENTIAL_NEAR_MISS_THEN_EOF",
+		FAILURE_NO_MATCH_THEN_EOF:            "FAILURE_NO_MATCH_THEN_EOF",
 
-		FAILURE_NEAR_MISS: "FAILURE_NEAR_MISS",
-		FAILURE_NO_MATCH:  "FAILURE_NO_MATCH",
+		FAILURE_POTENTIAL_NEAR_MISS: "FAILURE_POTENTIAL_NEAR_MISS",
+		FAILURE_NO_MATCH:            "FAILURE_NO_MATCH",
 
 		FAILURE_OTHER: "FAILURE_OTHER",
 	}
@@ -166,10 +170,12 @@ func (mr MatchRes) HowManyBytesMatched() int {
 }
 
 func NewMatchSuccess(mt MatchType, actual string, rest string) MatchRes {
+	overlap := utf8.RuneCountInString(actual)
+	howManyMoreRunes := utf8.RuneCountInString(rest)
 	return MatchRes{
 		matchType: mt,
 		dist:      0,
-		oDist:     NewODist(0, 0),
+		oDist:     NewODist(Distance(0), Overlap(overlap), Leftover(-howManyMoreRunes)),
 		match:     actual,
 		rest:      rest,
 	}

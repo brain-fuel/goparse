@@ -12,19 +12,19 @@ import (
 )
 
 const (
-	NEAR_MISS_CHAR_THRESHOLD       int     = 1
-	NEAR_MISS_PERCENTAGE_THRESHOLD float64 = 25.0
+	POTENTIAL_NEAR_MISS_CHAR_THRESHOLD       int     = 1
+	POTENTIAL_NEAR_MISS_PERCENTAGE_THRESHOLD float64 = 25.0
 )
 
 func NearMissThresholds() (int, float64) {
-	lookupCharThreshold, ctExists := os.LookupEnv("NEAR_MISS_CHAR_THRESHOLD")
-	lookupPercentThreshold, dtExists := os.LookupEnv("NEAR_MISS_PERCENTAGE_THRESHOLD")
-	ct := NEAR_MISS_CHAR_THRESHOLD
-	dt := NEAR_MISS_PERCENTAGE_THRESHOLD
+	lookupCharThreshold, ctExists := os.LookupEnv("POTENTIAL_NEAR_MISS_CHAR_THRESHOLD")
+	lookupPercentThreshold, dtExists := os.LookupEnv("POTENTIAL_NEAR_MISS_PERCENTAGE_THRESHOLD")
+	ct := POTENTIAL_NEAR_MISS_CHAR_THRESHOLD
+	dt := POTENTIAL_NEAR_MISS_PERCENTAGE_THRESHOLD
 	if ctExists {
 		lct, err := strconv.Atoi(lookupCharThreshold)
 		if err != nil {
-			ct = NEAR_MISS_CHAR_THRESHOLD
+			ct = POTENTIAL_NEAR_MISS_CHAR_THRESHOLD
 		} else {
 			ct = lct
 		}
@@ -32,7 +32,7 @@ func NearMissThresholds() (int, float64) {
 	if dtExists {
 		ldt, err := strconv.ParseFloat(lookupPercentThreshold, 64)
 		if err != nil {
-			dt = NEAR_MISS_PERCENTAGE_THRESHOLD
+			dt = POTENTIAL_NEAR_MISS_PERCENTAGE_THRESHOLD
 		} else {
 			dt = ldt
 		}
@@ -49,7 +49,7 @@ func NearMissThreshold(length int) int {
 	return int(math.Floor((dt * float64(length) / 100)))
 }
 
-func IsEOF() types.MatchPred {
+func MatchesEOF() types.MatchPred {
 	return func(in string) types.MatchRes {
 		if utf8.RuneCountInString(in) != 0 {
 			return types.NewMatchFailure(types.FAILURE_EOF, DLDist(in, ""), ODLDist(in, ""), in)
@@ -58,10 +58,15 @@ func IsEOF() types.MatchPred {
 	}
 }
 
-func IsAnyRune() types.MatchPred {
+func MatchesAnyRune() types.MatchPred {
 	return func(in string) types.MatchRes {
 		if utf8.RuneCountInString(in) == 0 {
-			return types.NewMatchFailure(types.FAILURE_EOF, 1, types.NewODist(0, 1), "")
+			return types.NewMatchFailure(
+				types.FAILURE_EOF,
+				1,
+				types.NewODist(types.Distance(0), types.Overlap(0), types.Leftover(1)),
+				"",
+			)
 		}
 		return types.NewMatchSuccess(
 			types.SUCCESS_RUNE,
@@ -126,7 +131,7 @@ func butFirstCharInString(cs string) string {
 	return butNCharInString(1, cs)
 }
 
-func IsRune(toMatch rune) types.MatchPred {
+func MatchesRune(toMatch rune) types.MatchPred {
 	return func(in string) types.MatchRes {
 		firstRune, err := firstRuneInString(in)
 		if err != nil {
@@ -153,7 +158,7 @@ func IsRune(toMatch rune) types.MatchPred {
 	}
 }
 
-func IsStr(toMatch string) types.MatchPred {
+func MatchesStr(toMatch string) types.MatchPred {
 	return func(in string) types.MatchRes {
 		inputLength := utf8.RuneCountInString(in)
 		matchLength := utf8.RuneCountInString(toMatch)
@@ -185,20 +190,20 @@ func failMatchType(
 ) types.MatchType {
 	disti := int(dist)
 	nearMissThreshold := NearMissThreshold(length)
-	count, overlap := oDist.ToTuple()
+	count, _, leftover := oDist.ToTriple()
 	counti := int(count)
-	overlapi := int(overlap)
-	if 0 < overlapi {
+	leftoveri := int(leftover)
+	if 0 < leftoveri {
 		if counti == 0 {
 			return types.FAILURE_MATCH_THEN_EOF
 		}
 		if counti <= nearMissThreshold {
-			return types.FAILURE_NEAR_MISS_THEN_EOF
+			return types.FAILURE_POTENTIAL_NEAR_MISS_THEN_EOF
 		}
 		return types.FAILURE_NO_MATCH_THEN_EOF
 	}
 	if disti <= nearMissThreshold {
-		return types.FAILURE_NEAR_MISS
+		return types.FAILURE_POTENTIAL_NEAR_MISS
 	}
 	return types.FAILURE_NO_MATCH
 }
@@ -213,10 +218,10 @@ func absInt(n int) int {
 // https://en.wikipedia.org/wiki/Damerau-Levenshtein_distance
 func DLDist(s1, s2 string) types.Distance {
 	if len(s1) == 0 {
-		return utf8.RuneCountInString(s2)
+		return types.Distance(utf8.RuneCountInString(s2))
 	}
 	if len(s2) == 0 {
-		return utf8.RuneCountInString(s1)
+		return types.Distance(utf8.RuneCountInString(s1))
 	}
 	if s1 == s2 {
 		return 0
@@ -248,7 +253,7 @@ func DLDist(s1, s2 string) types.Distance {
 			}
 		}
 	}
-	return m[l1][l2]
+	return types.Distance(m[l1][l2])
 }
 
 func multiMin(ns ...int) int {
@@ -269,14 +274,22 @@ func ODLDist(s1, s2 string) types.OverlappingDistance {
 	l1 := utf8.RuneCountInString(s1)
 	l2 := utf8.RuneCountInString(s2)
 	minLen := min(l1, l2)
-	diff := absInt(l1 - l2)
-	return types.NewODist(DLDist(s1[:minLen], s2[:minLen]), diff)
+	leftover := absInt(l1 - l2)
+	return types.NewODist(
+		DLDist(s1[:minLen], s2[:minLen]),
+		types.Overlap(minLen),
+		types.Leftover(leftover),
+	)
 }
 
 func ODLDistExpectedVsActual(expected, actual string) types.OverlappingDistance {
 	lExpected := utf8.RuneCountInString(expected)
 	lActual := utf8.RuneCountInString(actual)
 	minLen := min(lExpected, lActual)
-	diff := lExpected - lActual
-	return types.NewODist(DLDist(expected[:minLen], actual[:minLen]), diff)
+	leftover := lExpected - lActual
+	return types.NewODist(
+		DLDist(expected[:minLen], actual[:minLen]),
+		types.Overlap(minLen),
+		types.Leftover(leftover),
+	)
 }
